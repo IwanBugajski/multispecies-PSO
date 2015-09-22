@@ -68,7 +68,7 @@ The optimization can be adjusted by modifying the following variables:
 
 
 ### Creating a multispecies swarm
-Firstly, you need to create an array of [SwarmInformation](src/pl/edu/agh/miss/swarm/SwarmInformation.java) instances. A SwarmInformation object contains two information: 
+Firstly, you need to create an array of [SwarmInformation](src/pl/edu/agh/miss/swarm/SwarmInformation.java) instances. A SwarmInformation object contains two pieces of information: 
 
 * Number of particles of specified type
 * Species of those particles - an instance of enum [SpeciesType](src/pl/edu/agh/miss/particle/species/SpeciesType.java)
@@ -79,4 +79,31 @@ SwarmInformation [] swarmInfos = new SwarmInformation[3];
 swarmInfos[0] = new SwarmInformation(10, SpeciesType.ALL);
 swarmInfos[1] = new SwarmInformation(5, SpeciesType.GLOBAL_AND_LOCAL);
 swarmInfos[2] = new SwarmInformation(5, SpeciesType.RANDOM);
+```
+
+Secondly, you will need a function to optimize. To get one create a class extending net.sourceforge.jswarm_pso.FitnessFunction. See an example -  [RastriginFunction](https://github.com/wojtekblack/miss2015/blob/master/src/pl/edu/agh/miss/multidimensional/RastriginFunction.java)
+
+Now create an instance of [MultiSwarm](src/pl/edu/agh/miss/swarm/MultiSwarm.java) class:
+```java
+MultiSwarm multiSwarm = new MultiSwarm(swarmInfos, new RastriginFunction());
+```
+
+The last things to do are setting the neighbourhood and adjusting the size of search space:
+```java
+Neighborhood neighbourhood = new Neighborhood1D(5, true);
+multiSwarm.setNeighborhood(neighbourhood);
+multiSwarm.setMaxPosition(100);
+multiSwarm.setMinPosition(-100);
+```
+
+### Performing optimization
+To perform one step of simulation simply invoke:
+```java
+multiSwarm.evolve();
+```
+
+To get current get position or fitness use:
+```java
+multiSwarm.getBestFitness();
+multiSwarm.getBestPosition();
 ```
