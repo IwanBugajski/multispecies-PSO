@@ -1,6 +1,6 @@
 package pl.edu.agh.miss;
 
-import static pl.edu.agh.miss.Simulation.NUMBER_OF_DIMENTIONS;
+import static pl.edu.agh.miss.Simulation.NUMBER_OF_DIMENSIONS;
 import static pl.edu.agh.miss.Simulation.NUMBER_OF_ITERATIONS;
 import static pl.edu.agh.miss.Simulation.NUMBER_OF_SKIPPED_ITERATIONS;
 
@@ -39,7 +39,7 @@ public class Comparison {
 			//run("Swarm 3", new int[] {5, 5, 0, 4, 2, 2, 2, 4});
 		}
 		
-		Chart chart = new ScatterChart().setTitle("PSO Ristrigin optimizing, " + NUMBER_OF_DIMENTIONS + " dimensions, " + NUMBER_OF_ITERATIONS + " iterations").
+		Chart chart = new ScatterChart().setTitle("PSO Ristrigin optimizing, " + NUMBER_OF_DIMENSIONS + " dimensions, " + NUMBER_OF_ITERATIONS + " iterations").
 				setXAxisTitle("Iterations").setYAxisTitle("Fitness").addSubTitle("" + EXECUTIONS + " executions");
 		
 		for(String swarmName : results.keySet()){
