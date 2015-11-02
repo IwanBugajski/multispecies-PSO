@@ -4,6 +4,7 @@ import static pl.edu.agh.miss.Simulation.NUMBER_OF_DIMENTIONS;
 import static pl.edu.agh.miss.Simulation.NUMBER_OF_ITERATIONS;
 import static pl.edu.agh.miss.Simulation.NUMBER_OF_SKIPPED_ITERATIONS;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +26,7 @@ import pl.edu.agh.miss.swarm.SwarmInformation;
 @SuppressWarnings("rawtypes")
 public class Comparison {
 	private static final int EXECUTIONS = 1;
+	public static final String RAW_CHART_PATH = Paths.get("raw","chart").toString();
 	private static Map<String, Chart> pieCharts = new TreeMap<String, Chart>();
 	private static Map<String, Map<Integer, List<Double>>> results = new TreeMap<String, Map<Integer,List<Double>>>();
 	@SuppressWarnings("unchecked")
@@ -60,7 +62,7 @@ public class Comparison {
 			chart.addSeries(swarmName, points);
 		}
 		
-		chart.addStandardDeviation().saveWithDateStamp("raw/chart");
+		chart.addStandardDeviation().saveWithDateStamp(RAW_CHART_PATH);
 		
 		try{
 			ChartCombiner.combine(chart, pieCharts);

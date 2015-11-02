@@ -2,6 +2,7 @@ package pl.edu.agh.miss.chart;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -62,7 +63,7 @@ public abstract class Chart<T> {
 	
 	public void saveWithDateStamp(String prefix){
 		String timeStamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(Calendar.getInstance().getTime());
-		String fileName = "results/" + prefix + "_" + timeStamp + ".jpg";
+		String fileName = Paths.get("results", prefix + "_" + timeStamp + ".jpg").toString();
 		save(fileName);
 	}
 	
