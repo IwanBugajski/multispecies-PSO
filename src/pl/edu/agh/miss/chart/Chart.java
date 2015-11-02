@@ -53,6 +53,7 @@ public abstract class Chart<T> {
 	public void save(String fileName){
 		File file = new File(fileName);
 		try {
+			file.getParentFile().mkdirs();
 			file.createNewFile();
 			save(file);
 			System.out.println("Chart saved at " + file.getAbsolutePath());
