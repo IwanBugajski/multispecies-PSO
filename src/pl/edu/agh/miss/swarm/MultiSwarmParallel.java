@@ -33,7 +33,7 @@ public class MultiSwarmParallel extends MultiSwarm {
         numberOfEvaliations += particles.length; // Update counter
     }
 
-    private void updateBestPositions(int index, double fitness) {
+    private synchronized void updateBestPositions(int index, double fitness) {
         // Update 'best global' position
         if (fitnessFunction.isBetterThan(bestFitness, fitness)) {
             bestFitness = fitness; // Copy best fitness, index, and position vector
