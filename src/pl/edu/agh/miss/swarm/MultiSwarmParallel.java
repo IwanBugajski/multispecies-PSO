@@ -28,12 +28,9 @@ public class MultiSwarmParallel extends MultiSwarm {
         for (int i = 0; i < particles.length; i++) {
             // Evaluate particle
             double fit = fitnessFunction.evaluate(particles[i]);
-
-            numberOfEvaliations++; // Update counter
             updateBestPositions(i, fit);
-
-
         }
+        numberOfEvaliations += particles.length; // Update counter
     }
 
     private void updateBestPositions(int index, double fitness) {
