@@ -30,20 +30,24 @@ public class MultiSwarmParallel extends MultiSwarm {
             double fit = fitnessFunction.evaluate(particles[i]);
 
             numberOfEvaliations++; // Update counter
+            updateBestPositions(i, fit);
 
-            // Update 'best global' position
-            if (fitnessFunction.isBetterThan(bestFitness, fit)) {
-                bestFitness = fit; // Copy best fitness, index, and position vector
-                bestParticleIndex = i;
-                if (bestPosition == null) bestPosition = new double[sampleParticle.getDimension()];
-                particles[bestParticleIndex].copyPosition(bestPosition);
-            }
 
-            // Update 'best neighborhood'
-            if (neighborhood != null) {
-                neighborhood.update(this, particles[i]);
-            }
+        }
+    }
 
+    private void updateBestPositions(int index, double fitness) {
+        // Update 'best global' position
+        if (fitnessFunction.isBetterThan(bestFitness, fitness)) {
+            bestFitness = fitness; // Copy best fitness, index, and position vector
+            bestParticleIndex = index;
+            if (bestPosition == null) bestPosition = new double[sampleParticle.getDimension()];
+            particles[bestParticleIndex].copyPosition(bestPosition);
+        }
+
+        // Update 'best neighborhood'
+        if (neighborhood != null) {
+            neighborhood.update(this, particles[index]);
         }
     }
 }
