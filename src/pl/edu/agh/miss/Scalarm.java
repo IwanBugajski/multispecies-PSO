@@ -90,12 +90,9 @@ public class Scalarm {
 		
 		multiSwarm.setMaxPosition(100);
 		multiSwarm.setMinPosition(-100);
-		
-		for(int i = 0; i < NUMBER_OF_ITERATIONS; ++i) {
-			// Evolve swarm
-			multiSwarm.evolve();
-		}
-		
+
+		multiSwarm.runSimulation(NUMBER_OF_ITERATIONS);
+
 		System.out.println(multiSwarm.getBestFitness());
 	}
 }

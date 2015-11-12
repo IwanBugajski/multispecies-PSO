@@ -37,7 +37,7 @@ public class MultiSwarm extends Swarm {
 		
 		this.swarmInfos = swarmInfos;
 	}
-	
+
 	@Override
 	public void init() {
 		// Init particles
@@ -93,7 +93,14 @@ public class MultiSwarm extends Swarm {
 			}
 		}
 	}
-	
+
+	public void runSimulation(int numberOfIterations) {
+		for(int i = 0; i < numberOfIterations; ++i) {
+			// Evolve swarm
+			evolve();
+		}
+	}
+
 	@Override
 	public void evolve() {
 		// Initialize (if not already done)
