@@ -9,13 +9,25 @@ import java.util.concurrent.*;
 
 public class MultiSwarmParallel extends MultiSwarm {
 
-    private final ExecutorService executorService;
+    private ExecutorService executorService;
 
     private final int THREAD_POOL_SIZE = 25;
 
     public MultiSwarmParallel(SwarmInformation[] swarmInfos, FitnessFunction fitnessFunction) {
         super(swarmInfos, fitnessFunction);
+    }
+
+    @Override
+    public void runSimulation(int numberOfIterations) {
         executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+        super.runSimulation(numberOfIterations);
+        executorService.shutdown();
+        try {
+            executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS); // wait forever
+        } catch (InterruptedException e) {
+            // should not happen
+            e.printStackTrace();
+        }
     }
 
     /**
