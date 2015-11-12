@@ -2,10 +2,20 @@ package pl.edu.agh.miss.swarm;
 
 import net.sourceforge.jswarm_pso.FitnessFunction;
 
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.*;
+
 public class MultiSwarmParallel extends MultiSwarm {
+
+    private final ExecutorService executorService;
+
+    private final int THREAD_POOL_SIZE = 25;
 
     public MultiSwarmParallel(SwarmInformation[] swarmInfos, FitnessFunction fitnessFunction) {
         super(swarmInfos, fitnessFunction);
+        executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
     }
 
     /**
@@ -25,11 +35,23 @@ public class MultiSwarmParallel extends MultiSwarm {
         //---
         // Evaluate each particle (and find the 'best' one)
         //---
+        List<Callable<Object>> tasks = new LinkedList<>();
         for (int i = 0; i < particles.length; i++) {
             // Evaluate particle
-            double fit = fitnessFunction.evaluate(particles[i]);
-            updateBestPositions(i, fit);
+            tasks.add(new EvaluationRunnable(i));
         }
+
+        try {
+            List<Future<Object>> futures = executorService.invokeAll(tasks);
+            for (Future<Object> future : futures) {
+                future.get();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
         numberOfEvaliations += particles.length; // Update counter
     }
 
@@ -45,6 +67,21 @@ public class MultiSwarmParallel extends MultiSwarm {
         // Update 'best neighborhood'
         if (neighborhood != null) {
             neighborhood.update(this, particles[index]);
+        }
+    }
+
+    private class EvaluationRunnable<Object> implements Callable<Object> {
+        private int index;
+
+        public EvaluationRunnable(int index) {
+            this.index = index;
+        }
+
+        @Override
+        public Object call() throws Exception {
+            double fit = fitnessFunction.evaluate(particles[index]);
+            updateBestPositions(index, fit);
+            return null;
         }
     }
 }
