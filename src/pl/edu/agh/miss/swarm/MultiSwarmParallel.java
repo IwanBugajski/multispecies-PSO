@@ -44,12 +44,8 @@ public class MultiSwarmParallel extends MultiSwarm {
             bestParticleIndex = -1;
         }
 
-        //---
-        // Evaluate each particle (and find the 'best' one)
-        //---
         List<Callable<Object>> tasks = new LinkedList<>();
         for (int i = 0; i < particles.length; i++) {
-            // Evaluate particle
             tasks.add(new EvaluationRunnable(i));
         }
 
