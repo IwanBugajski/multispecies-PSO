@@ -34,6 +34,7 @@ public class MultiSwarmParallel extends MultiSwarm {
      * Evaluate fitness function for every particle
      * Warning: particles[] must be initialized and fitnessFunction must be set
      */
+    @Override
     public void evaluate() {
         if (particles == null) throw new RuntimeException("No particles in this swarm! May be you need to call Swarm.init() method");
         if (fitnessFunction == null) throw new RuntimeException("No fitness function in this swarm! May be you need to call Swarm.setFitnessFunction() method");
