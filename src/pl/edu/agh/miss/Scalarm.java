@@ -10,6 +10,7 @@ import java.util.List;
 import net.sourceforge.jswarm_pso.Neighborhood;
 import net.sourceforge.jswarm_pso.Neighborhood1D;
 import pl.edu.agh.miss.multidimensional.RastriginFunction;
+import pl.edu.agh.miss.multidimensional.RastriginParallelFunction;
 import pl.edu.agh.miss.particle.species.SpeciesType;
 import pl.edu.agh.miss.swarm.MultiSwarm;
 import pl.edu.agh.miss.swarm.MultiSwarmParallel;
@@ -76,8 +77,9 @@ public class Scalarm {
 			}
 		}
 		
-		SwarmInformation [] swarmInformationsArray = new SwarmInformation [swarmInformations.size()]; 
-		MultiSwarm multiSwarm = new MultiSwarmParallel(swarmInformations.toArray(swarmInformationsArray), new RastriginFunction());
+		SwarmInformation [] swarmInformationsArray = new SwarmInformation [swarmInformations.size()];
+		final RastriginFunction fitnessFunction = new RastriginParallelFunction();
+		MultiSwarm multiSwarm = new MultiSwarmParallel(swarmInformations.toArray(swarmInformationsArray), fitnessFunction);
 		
 		Neighborhood neighbourhood = new Neighborhood1D(cnt / 5, true);
 		multiSwarm.setNeighborhood(neighbourhood);
