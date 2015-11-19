@@ -78,7 +78,7 @@ public class Scalarm {
 		}
 		
 		SwarmInformation [] swarmInformationsArray = new SwarmInformation [swarmInformations.size()];
-		final RastriginFunction fitnessFunction = new RastriginParallelFunction();
+		final RastriginParallelFunction fitnessFunction = new RastriginParallelFunction();
 		MultiSwarm multiSwarm = new MultiSwarmParallel(swarmInformations.toArray(swarmInformationsArray), fitnessFunction);
 		
 		Neighborhood neighbourhood = new Neighborhood1D(cnt / 5, true);
