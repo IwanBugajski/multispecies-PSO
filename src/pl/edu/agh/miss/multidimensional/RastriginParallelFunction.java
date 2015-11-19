@@ -13,5 +13,16 @@ public class RastriginParallelFunction extends RastriginFunction{
 	public RastriginParallelFunction(boolean maximize){
 		super(maximize);
 	}
-	
+
+	/**
+	 * Evaluates a particles
+	 * @param particle : Particle to evaluate
+	 * @return Fitness function for a particle
+	 */
+	public double evaluate(Particle particle) {
+		double position[] = particle.getPosition();
+		double fit = evaluate(position);
+		particle.setFitness(fit, isMaximize());
+		return fit;
+	}
 }
