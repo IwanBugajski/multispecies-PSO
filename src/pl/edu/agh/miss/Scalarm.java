@@ -1,8 +1,8 @@
 package pl.edu.agh.miss;
 
+import static pl.edu.agh.miss.Simulation.NUMBER_OF_DIMENSIONS;
 import static pl.edu.agh.miss.Simulation.NUMBER_OF_ITERATIONS;
 import static pl.edu.agh.miss.Simulation.NUMBER_OF_PARTICLES;
-import static pl.edu.agh.miss.Simulation.NUMBER_OF_DIMENSIONS;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,6 @@ import net.sourceforge.jswarm_pso.FitnessFunction;
 import net.sourceforge.jswarm_pso.Neighborhood;
 import net.sourceforge.jswarm_pso.Neighborhood1D;
 import pl.edu.agh.miss.fitness.Rastrigin;
-import pl.edu.agh.miss.fitness.Rosenbrock;
 import pl.edu.agh.miss.particle.species.SpeciesType;
 import pl.edu.agh.miss.swarm.MultiSwarm;
 import pl.edu.agh.miss.swarm.SwarmInformation;
@@ -33,6 +32,7 @@ import pl.edu.agh.miss.swarm.SwarmInformation;
  * - proportional share of 8th species
  */
 public class Scalarm {
+	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws InstantiationException, IllegalAccessException {
 		//get optimization problem
 		FitnessFunction fitnessFunction = null;
@@ -109,6 +109,11 @@ public class Scalarm {
 		for(int i = 0; i < NUMBER_OF_ITERATIONS; ++i) {
 			// Evolve swarm
 			multiSwarm.evolve();
+			
+			//display partial results
+			if(i % (NUMBER_OF_ITERATIONS / 100) == 0){
+				System.out.println(multiSwarm.getBestFitness());
+			}
 		}
 		
 		System.out.println(multiSwarm.getBestFitness());
