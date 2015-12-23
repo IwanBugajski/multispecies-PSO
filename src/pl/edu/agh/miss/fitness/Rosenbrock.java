@@ -1,16 +1,16 @@
-package pl.edu.agh.miss.multidimensional;
+package pl.edu.agh.miss.fitness;
 
 import net.sourceforge.jswarm_pso.FitnessFunction;
 
-public class RosenbrockFunction extends FitnessFunction{
+public class Rosenbrock extends FitnessFunction{
     private static final int A = 1;
     private static final int B = 100;
 
-    public RosenbrockFunction() {
+    public Rosenbrock() {
         super(false);
     }
 
-    public RosenbrockFunction(boolean maximize) {
+    public Rosenbrock(boolean maximize) {
         super(maximize);
     }
 

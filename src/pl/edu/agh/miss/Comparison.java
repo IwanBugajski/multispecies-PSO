@@ -17,7 +17,7 @@ import pl.edu.agh.miss.chart.ChartCombiner;
 import pl.edu.agh.miss.chart.Point;
 import pl.edu.agh.miss.chart.ScatterChart;
 import pl.edu.agh.miss.chart.SpeciesPieChart;
-import pl.edu.agh.miss.multidimensional.RastriginFunction;
+import pl.edu.agh.miss.fitness.Rastrigin;
 import pl.edu.agh.miss.particle.species.SpeciesType;
 import pl.edu.agh.miss.swarm.MultiSwarm;
 import pl.edu.agh.miss.swarm.SwarmInformation;
@@ -104,7 +104,7 @@ public class Comparison {
 		}
 		
 		SwarmInformation [] swarmInformationsArray = new SwarmInformation [swarmInformations.size()]; 
-		MultiSwarm multiSwarm = new MultiSwarm(swarmInformations.toArray(swarmInformationsArray), new RastriginFunction());
+		MultiSwarm multiSwarm = new MultiSwarm(swarmInformations.toArray(swarmInformationsArray), new Rastrigin());
 		
 		Neighborhood neighbourhood = new Neighborhood1D(cnt / 5, true);
 		multiSwarm.setNeighborhood(neighbourhood);

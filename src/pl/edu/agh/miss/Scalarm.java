@@ -7,10 +7,11 @@ import static pl.edu.agh.miss.Simulation.NUMBER_OF_DIMENSIONS;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sourceforge.jswarm_pso.FitnessFunction;
 import net.sourceforge.jswarm_pso.Neighborhood;
 import net.sourceforge.jswarm_pso.Neighborhood1D;
-import pl.edu.agh.miss.multidimensional.RastriginFunction;
-import pl.edu.agh.miss.multidimensional.RosenbrockFunction;
+import pl.edu.agh.miss.fitness.Rastrigin;
+import pl.edu.agh.miss.fitness.Rosenbrock;
 import pl.edu.agh.miss.particle.species.SpeciesType;
 import pl.edu.agh.miss.swarm.MultiSwarm;
 import pl.edu.agh.miss.swarm.SwarmInformation;
@@ -19,6 +20,7 @@ import pl.edu.agh.miss.swarm.SwarmInformation;
  * 
  * @author iwanb
  * command line args:
+ * - function name - must be the same as class from pl.edu.agh.miss.fitness
  * - number of dimensions
  * - number of iterations
  * - proportional share of 1st species
@@ -31,14 +33,27 @@ import pl.edu.agh.miss.swarm.SwarmInformation;
  * - proportional share of 8th species
  */
 public class Scalarm {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InstantiationException, IllegalAccessException {
+		//get optimization problem
+		FitnessFunction fitnessFunction = null;
+		Class<? extends FitnessFunction> fitnessFunctionClass = Rastrigin.class;
+		final String className = args.length >= 1 ? args[0] : "Rastrigin";
+		final String packageName = "pl.edu.agh.miss.fitness";
+		try {
+			fitnessFunctionClass = (Class<FitnessFunction>) Class.forName(packageName + "." + className);
+		} catch (ClassNotFoundException e) {
+			System.out.println(className + " " + e.getMessage() + " using Rastrigin function");
+		} finally {
+			fitnessFunction = fitnessFunctionClass.newInstance();
+		}
+		
 		//get number of dimensions
-		if(args.length >= 1){
-			NUMBER_OF_DIMENSIONS = Integer.valueOf(args[0]);
+		if(args.length >= 2){
+			NUMBER_OF_DIMENSIONS = Integer.valueOf(args[1]);
 		}
 		//get number of iterations
-		if(args.length >= 2){
-			NUMBER_OF_ITERATIONS = Integer.valueOf(args[1]);
+		if(args.length >= 3){
+			NUMBER_OF_ITERATIONS = Integer.valueOf(args[2]);
 		}
 		
 		//create array of species share
@@ -46,22 +61,22 @@ public class Scalarm {
 		int [] speciesArray = new int[numberOfSpecies];
 		int argsSum = 0;
 		
-		for(int i = 2; i < Math.min(numberOfSpecies + 2, args.length); i++){
+		for(int i = 3; i < Math.min(numberOfSpecies + 3, args.length); i++){
 			argsSum += Integer.valueOf(args[i]);
 		}
 		
 		if(argsSum == 0){
 			speciesArray[0] = NUMBER_OF_PARTICLES;
 		} else {
-			for(int i = 0; i < Math.min(numberOfSpecies, args.length - 2); i++){
-				float speciesShare = (float) Integer.valueOf(args[i + 2]) / (float) argsSum;
+			for(int i = 0; i < Math.min(numberOfSpecies, args.length - 3); i++){
+				float speciesShare = (float) Integer.valueOf(args[i + 3]) / (float) argsSum;
 				speciesArray[i] = (int) (speciesShare * NUMBER_OF_PARTICLES);
 			}
 		}
-		run(speciesArray);
+		run(speciesArray, fitnessFunction);
 	}
 
-	private static void run(int [] particles){
+	private static void run(int [] particles, FitnessFunction fitnessFunction){
 		int cnt = 0;
 		List<SwarmInformation> swarmInformations = new ArrayList<SwarmInformation>();
 		
@@ -77,7 +92,7 @@ public class Scalarm {
 		}
 		
 		SwarmInformation [] swarmInformationsArray = new SwarmInformation [swarmInformations.size()]; 
-		MultiSwarm multiSwarm = new MultiSwarm(swarmInformations.toArray(swarmInformationsArray), new RosenbrockFunction());
+		MultiSwarm multiSwarm = new MultiSwarm(swarmInformations.toArray(swarmInformationsArray), fitnessFunction);
 		
 		Neighborhood neighbourhood = new Neighborhood1D(cnt / 5, true);
 		multiSwarm.setNeighborhood(neighbourhood);

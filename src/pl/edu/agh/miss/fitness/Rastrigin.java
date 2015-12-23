@@ -1,15 +1,15 @@
-package pl.edu.agh.miss.multidimensional;
+package pl.edu.agh.miss.fitness;
 
 import net.sourceforge.jswarm_pso.FitnessFunction;
 
-public class RastriginFunction extends FitnessFunction{
+public class Rastrigin extends FitnessFunction{
 	private final int A = 10;
 	
-	public RastriginFunction() {
+	public Rastrigin() {
 		super(false);
 	}
 	
-	public RastriginFunction(boolean maximize){
+	public Rastrigin(boolean maximize){
 		super(maximize);
 	}
 	
