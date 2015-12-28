@@ -50,10 +50,12 @@ public class Scalarm {
 		//get number of dimensions
 		if(args.length >= 2){
 			NUMBER_OF_DIMENSIONS = Integer.valueOf(args[1]);
+			if(NUMBER_OF_DIMENSIONS <= 0) NUMBER_OF_DIMENSIONS = 10;
 		}
 		//get number of iterations
 		if(args.length >= 3){
 			NUMBER_OF_ITERATIONS = Integer.valueOf(args[2]);
+			if(NUMBER_OF_ITERATIONS <= 0) NUMBER_OF_ITERATIONS = 1000;
 		}
 		
 		//create array of species share
@@ -111,7 +113,7 @@ public class Scalarm {
 			multiSwarm.evolve();
 			
 			//display partial results
-			if(i % (NUMBER_OF_ITERATIONS / 100) == 0){
+			if(NUMBER_OF_ITERATIONS > 100 && (i % (NUMBER_OF_ITERATIONS / 100) == 0)){
 				System.out.println(multiSwarm.getBestFitness());
 			}
 		}
