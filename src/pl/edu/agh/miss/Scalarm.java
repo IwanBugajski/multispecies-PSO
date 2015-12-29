@@ -4,6 +4,9 @@ import static pl.edu.agh.miss.Simulation.NUMBER_OF_DIMENSIONS;
 import static pl.edu.agh.miss.Simulation.NUMBER_OF_ITERATIONS;
 import static pl.edu.agh.miss.Simulation.NUMBER_OF_PARTICLES;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,9 +14,15 @@ import net.sourceforge.jswarm_pso.FitnessFunction;
 import net.sourceforge.jswarm_pso.Neighborhood;
 import net.sourceforge.jswarm_pso.Neighborhood1D;
 import pl.edu.agh.miss.fitness.Rastrigin;
+import pl.edu.agh.miss.output.SimulationOutput;
+import pl.edu.agh.miss.output.SimulationOutputError;
+import pl.edu.agh.miss.output.SimulationOutputOk;
+import pl.edu.agh.miss.output.SimulationResult;
 import pl.edu.agh.miss.particle.species.SpeciesType;
 import pl.edu.agh.miss.swarm.MultiSwarm;
 import pl.edu.agh.miss.swarm.SwarmInformation;
+
+import com.google.gson.Gson;
 
 /**
  * 
@@ -32,12 +41,14 @@ import pl.edu.agh.miss.swarm.SwarmInformation;
  * - proportional share of 8th species
  */
 public class Scalarm {
+	private static String className;
+
 	@SuppressWarnings("unchecked")
-	public static void main(String[] args) throws InstantiationException, IllegalAccessException {
+	public static void main(String[] args) throws InstantiationException, IllegalAccessException, IOException {
 		//get optimization problem
 		FitnessFunction fitnessFunction = null;
 		Class<? extends FitnessFunction> fitnessFunctionClass = Rastrigin.class;
-		final String className = args.length >= 1 ? args[0] : "Rastrigin";
+		className = args.length >= 1 ? args[0] : "Rastrigin";
 		final String packageName = "pl.edu.agh.miss.fitness";
 		try {
 			fitnessFunctionClass = (Class<FitnessFunction>) Class.forName(packageName + "." + className);
@@ -75,10 +86,24 @@ public class Scalarm {
 				speciesArray[i] = (int) (speciesShare * NUMBER_OF_PARTICLES);
 			}
 		}
-		run(speciesArray, fitnessFunction);
+		
+		SimulationOutput output = null;
+		try{
+			SimulationResult result = run(speciesArray, fitnessFunction);
+			output = new SimulationOutputOk();
+			((SimulationOutputOk) output).results = result;
+		} catch (Throwable e){
+			output = new SimulationOutputError();
+			((SimulationOutputError)output).reason = e.toString() + ": " + e.getMessage();
+		} finally {
+			Writer writer = new FileWriter("output.json");
+			Gson gson = new Gson();
+			gson.toJson(output, writer);
+			writer.close();
+		}
 	}
 
-	private static void run(int [] particles, FitnessFunction fitnessFunction){
+	private static SimulationResult run(int [] particles, FitnessFunction fitnessFunction) {
 		int cnt = 0;
 		List<SwarmInformation> swarmInformations = new ArrayList<SwarmInformation>();
 		
@@ -108,16 +133,40 @@ public class Scalarm {
 		multiSwarm.setMaxPosition(100);
 		multiSwarm.setMinPosition(-100);
 		
+		List<Double> partial = new ArrayList<Double>(NUMBER_OF_ITERATIONS / 100);
+		
 		for(int i = 0; i < NUMBER_OF_ITERATIONS; ++i) {
 			// Evolve swarm
 			multiSwarm.evolve();
 			
 			//display partial results
 			if(NUMBER_OF_ITERATIONS > 100 && (i % (NUMBER_OF_ITERATIONS / 100) == 0)){
+				partial.add(multiSwarm.getBestFitness());
 				System.out.println(multiSwarm.getBestFitness());
 			}
 		}
 		
+		//print final results
 		System.out.println(multiSwarm.getBestFitness());
+		
+		//create output.json
+		SimulationResult output = new SimulationResult();
+		output.fitnessFunction = className;
+		output.iterations = NUMBER_OF_ITERATIONS;
+		output.dimensions = NUMBER_OF_DIMENSIONS;
+		output.partial = partial;
+		output.bestFitness = multiSwarm.getBestFitness();
+		output.totalParticles = NUMBER_OF_PARTICLES;
+		
+		output.species1 = particles[0];
+		output.species2 = particles[1];
+		output.species3 = particles[2];
+		output.species4 = particles[3];
+		output.species5 = particles[4];
+		output.species6 = particles[5];
+		output.species7 = particles[6];
+		output.species8 = particles[7];
+		
+		return output;
 	}
 }
