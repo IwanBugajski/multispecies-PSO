@@ -13,6 +13,7 @@ import java.util.List;
 import net.sourceforge.jswarm_pso.FitnessFunction;
 import net.sourceforge.jswarm_pso.Neighborhood;
 import net.sourceforge.jswarm_pso.Neighborhood1D;
+import pl.edu.agh.miss.dao.SimulationResultDAO;
 import pl.edu.agh.miss.fitness.Rastrigin;
 import pl.edu.agh.miss.output.SimulationOutput;
 import pl.edu.agh.miss.output.SimulationOutputError;
@@ -92,6 +93,8 @@ public class Scalarm {
 			SimulationResult result = run(speciesArray, fitnessFunction);
 			output = new SimulationOutputOk();
 			((SimulationOutputOk) output).results = result;
+			SimulationResultDAO.getInstance().writeResult(result);
+			SimulationResultDAO.getInstance().close();
 		} catch (Throwable e){
 			output = new SimulationOutputError();
 			((SimulationOutputError)output).reason = e.toString() + ": " + e.getMessage();
