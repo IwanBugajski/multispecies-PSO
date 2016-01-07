@@ -61,7 +61,8 @@ public class Graphs {
 		System.out.println("Preparing chart data");
 		
 		Chart<List<Point>> chart = new ScatterChart().setTitle("PSO " + fitnessFunction + " optimizing, " + "Influence of species no. " + speciesId).
-				setXAxisTitle("Iterations").setYAxisTitle("Fitness").addSubTitle("" + totalParticles + " particles, " + NUMBER_OF_DIMENSIONS + " dimensions, " + NUMBER_OF_ITERATIONS + " iterations");
+				setXAxisTitle("Iterations").setYAxisTitle("Fitness").addSubTitle("" + totalParticles + " particles, " + NUMBER_OF_DIMENSIONS + " dimensions, " + NUMBER_OF_ITERATIONS + " iterations").
+				setLogScale();
 		
 		for(int arg = 0; arg < 25; arg+=5){
 			int cnt = getCount(arg);

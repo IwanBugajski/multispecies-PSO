@@ -18,6 +18,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 
 public class SimulationResultDAO {
@@ -61,8 +62,10 @@ public class SimulationResultDAO {
     	if(limit > 0) find = find.limit(limit);
     	List<SimulationResult> results = new ArrayList<SimulationResult>();
     	
-    	while(find.iterator().hasNext() && limit != 0){
-    		Document next = find.iterator().next();
+    	MongoCursor<Document> iterator = find.iterator();
+    	
+		while(iterator.hasNext() && limit != 0){
+    		Document next = iterator.next();
     		SimulationResult result = new SimulationResult();
     		
     		result.totalParticles = totalParticles;
