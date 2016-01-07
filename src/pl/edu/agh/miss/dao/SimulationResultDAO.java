@@ -1,19 +1,20 @@
 package pl.edu.agh.miss.dao;
 
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientURI;
-import com.mongodb.client.MongoDatabase;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Timestamp;
+import java.util.Properties;
+
 import org.bson.Document;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
+
 import pl.edu.agh.miss.output.SimulationResult;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Timestamp;
-import java.util.LinkedList;
-import java.util.Properties;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
+import com.mongodb.client.MongoDatabase;
 
 public class SimulationResultDAO {
     private static final String DB_PROPERTIES_FILE = "db.properties";
