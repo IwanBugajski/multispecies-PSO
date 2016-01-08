@@ -1,6 +1,5 @@
 package pl.edu.agh.miss;
 
-import static pl.edu.agh.miss.Simulation.NUMBER_OF_DIMENSIONS;
 import static pl.edu.agh.miss.Simulation.NUMBER_OF_ITERATIONS;
 import static pl.edu.agh.miss.Simulation.NUMBER_OF_PARTICLES;
 
@@ -29,7 +28,7 @@ public class Graphs {
 	
 	
 	public static void main(String[] args) throws IOException {
-		getPartialsForSpecies(1);
+		for(int i = 1; i <= 8; i++) getPartialsForSpecies(i);
 	}
 	
 	
@@ -60,9 +59,13 @@ public class Graphs {
 		
 		System.out.println("Preparing chart data");
 		
-		Chart<List<Point>> chart = new ScatterChart().setTitle("PSO " + fitnessFunction + " optimizing, " + "Influence of species no. " + speciesId).
-				setXAxisTitle("Iterations").setYAxisTitle("Fitness").addSubTitle("" + totalParticles + " particles, " + NUMBER_OF_DIMENSIONS + " dimensions, " + NUMBER_OF_ITERATIONS + " iterations").
+		Chart<List<Point>> chart = new ScatterChart().setTitle("PSO " + fitnessFunction + " optimizing, ").
+				setXAxisTitle("Iterations").setYAxisTitle("Fitness").
+				addSubTitle("Influence of species no. " + speciesId + " - " + SpeciesType.values()[speciesId - 1].toString()).
+				addSubTitle("" + totalParticles + " particles, " + dimensions + " dimensions, " + iterations + " iterations").
 				setLogScale();
+		
+		int minExecutions = Integer.MAX_VALUE;
 		
 		for(int arg = 0; arg < 25; arg+=5){
 			int cnt = getCount(arg);
@@ -70,6 +73,7 @@ public class Graphs {
 			List<Point> points = new ArrayList<Point>();
 
 			List<List<Double>> valuesList = filteredResults.get(arg);
+			if(valuesList.size() < minExecutions) minExecutions = valuesList.size();
 			
 			for(int i = 0; i < 100; i++){
 				//count average
@@ -87,7 +91,8 @@ public class Graphs {
 			chart.addSeries(label, points);
 		}
 		
-		chart.saveWithDateStamp("partial/chart");
+		chart.addSubTitle("Executions: " + minExecutions);
+		chart.saveWithDateStamp("partial/species" + speciesId + "/chart");
 	}
 	
 	private static int getCount(int arg){
