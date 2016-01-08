@@ -1,4 +1,4 @@
-package pl.edu.agh.miss;
+package pl.edu.agh.miss.graphs;
 
 import static pl.edu.agh.miss.Simulation.NUMBER_OF_ITERATIONS;
 import static pl.edu.agh.miss.Simulation.NUMBER_OF_PARTICLES;
@@ -17,18 +17,20 @@ import pl.edu.agh.miss.dao.SimulationResultDAO;
 import pl.edu.agh.miss.output.SimulationResult;
 import pl.edu.agh.miss.particle.species.SpeciesType;
 
-public class Graphs {
+public class SpeciesShareGraph {
 	private static final String fitnessFunction = "Rastrigin";
 	private final static int dimensions = 100;
 	private final static int iterations = 2000000;
 	private final static int totalParticles = 25;
 	private final static int NUMBER_OF_SPECIES = SpeciesType.values().length;
 	
+	private final static int [] counts = new int[] {0, 2, 25}; 
+	
 	private static Map<Integer, List<List<Double>>> filteredResults = new HashMap<Integer, List<List<Double>>>();
 	
 	
 	public static void main(String[] args) throws IOException {
-		for(int i = 1; i <= 8; i++) getPartialsForSpecies(i);
+		for(int i = 1; i <= NUMBER_OF_SPECIES; i++) getPartialsForSpecies(i);
 	}
 	
 	
@@ -41,21 +43,20 @@ public class Graphs {
 		
 		
 		System.out.println("Filtering results");
-		for(int i = 0; i < 25; i+=5){
+		for(int cnt : counts){
 			List<List<Double>> partialResults = new ArrayList<List<Double>>();
-			filteredResults.put(i, partialResults);
+			filteredResults.put(cnt, partialResults);
 		}
 		
 		for(SimulationResult result : results){
-			for(int arg = 0; arg < 25; arg+=5){
-				if(meetsCriteria(result, speciesId, getCount(arg))){
-					filteredResults.get(arg).add(result.partial);
+			for(int cnt : counts){
+				if(meetsCriteria(result, speciesId, cnt)){
+					filteredResults.get(cnt).add(result.partial);
 					break;
 				}
 			}
 			
 		}
-		
 		
 		System.out.println("Preparing chart data");
 		
@@ -67,12 +68,11 @@ public class Graphs {
 		
 		int minExecutions = Integer.MAX_VALUE;
 		
-		for(int arg = 0; arg < 25; arg+=5){
-			int cnt = getCount(arg);
+		for(int cnt : counts){
 			String label = "" + cnt + " particles (" + Math.round((float) cnt * 100.0f / (float) totalParticles) + "%)";
 			List<Point> points = new ArrayList<Point>();
 
-			List<List<Double>> valuesList = filteredResults.get(arg);
+			List<List<Double>> valuesList = filteredResults.get(cnt);
 			if(valuesList.size() < minExecutions) minExecutions = valuesList.size();
 			
 			for(int i = 0; i < 100; i++){
@@ -93,12 +93,6 @@ public class Graphs {
 		
 		chart.addSubTitle("Executions: " + minExecutions);
 		chart.saveWithDateStamp("partial/species" + speciesId + "/chart");
-	}
-	
-	private static int getCount(int arg){
-		int argSum = arg + 5 * (NUMBER_OF_SPECIES - 1);
-		float speciesShare = (float) arg / (float) argSum;
-		return (int) (speciesShare * NUMBER_OF_PARTICLES);
 	}
 	
 	private static boolean meetsCriteria(SimulationResult result, int speciesId, int speciesCnt){
