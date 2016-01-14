@@ -15,6 +15,10 @@ public class Ackley extends FitnessFunction {
     private final static double B = 0.2;
 
     private final static double C = 2 * Math.PI;
+    
+    public Ackley(){
+    	super(false);
+    }
 
     @Override
     public double evaluate(double[] position) {

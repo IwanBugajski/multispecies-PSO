@@ -9,6 +9,11 @@ import static java.lang.Math.*;
  * http://www.sfu.ca/~ssurjano/griewank.html
  */
 public class Griewank extends FitnessFunction{
+	
+	public Griewank(){
+		super(false);
+	}
+	
     @Override
     public double evaluate(double[] position) {
         double sumOfSquaredPos = createSumOfSquaredPos(position);

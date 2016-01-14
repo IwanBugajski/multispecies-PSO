@@ -18,13 +18,13 @@ import pl.edu.agh.miss.output.SimulationResult;
 import pl.edu.agh.miss.particle.species.SpeciesType;
 
 public class SpeciesShareGraph {
-	private static final String fitnessFunction = "Rastrigin";
+	private static final String fitnessFunction = "Ackley";
 	private final static int dimensions = 100;
 	private final static int iterations = 2000000;
 	private final static int totalParticles = 25;
 	private final static int NUMBER_OF_SPECIES = SpeciesType.values().length;
 	
-	private final static int [] counts = new int[] {0, 2, 25}; 
+	private final static int [] counts = new int[] {0, 4, 11, 18, 25}; 
 	
 	private static Map<Integer, List<List<Double>>> filteredResults = new HashMap<Integer, List<List<Double>>>();
 	

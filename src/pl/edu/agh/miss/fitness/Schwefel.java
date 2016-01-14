@@ -11,6 +11,10 @@ import static java.lang.Math.sqrt;
  * http://www.sfu.ca/~ssurjano/schwef.html
  */
 public class Schwefel extends FitnessFunction{
+	
+	public Schwefel(){
+		super(false);
+	}
 
     @Override
     public double evaluate(double[] position) {
