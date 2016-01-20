@@ -91,10 +91,10 @@ public class SpeciesShareGraphForArticle {
 			
 			chart.addSeries(label, points);
 		}
-		
-		chart.addSubTitle("Executions: " + minExecutions);
+
 		chart.saveWithDateStamp("partial/species" + speciesId + "_totalParticles" + totalParticles +
-				"_dimensions" + dimensions + "_iterations" + iterations + "/chart");
+				"_dimensions" + dimensions + "_iterations" +
+				iterations + "_executions " + minExecutions + "/chart");
 	}
 	
 	private static boolean meetsCriteria(SimulationResult result, int speciesId, int speciesCnt){
