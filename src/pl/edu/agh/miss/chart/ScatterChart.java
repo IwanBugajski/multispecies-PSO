@@ -94,7 +94,7 @@ public class ScatterChart extends Chart<List<Point>>{
 			
 			
 		}
-		
-		ChartUtilities.saveChartAsJPEG(file, chart, size[0], size[1]);
+
+		ChartSaveUtilities.saveChart(file, chart, size[0], size[1]);
 	}
 }

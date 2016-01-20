@@ -55,8 +55,8 @@ public class SpeciesPieChart extends Chart<Integer>{
 			for(Title subtitle : subtitles)
 			chart.addSubtitle(subtitle);
 		}
-		
-		ChartUtilities.saveChartAsJPEG(file, chart, size[0], size[1]);
+
+		ChartSaveUtilities.saveChart(file, chart, size[0], size[1]);
 	}
 
 	@Override
