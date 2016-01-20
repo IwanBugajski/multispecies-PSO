@@ -65,7 +65,8 @@ public class SpeciesShareGraphForArticle {
 						.setTitle("PSO " + fitnessFunction + " optimizing, ")
 						.setXAxisTitle("Iterations")
 						.setYAxisTitle("Best Fitness")
-						.setLogScale();
+						.setLogScale()
+						.setFileFormat("pdf");
 		
 		int minExecutions = Integer.MAX_VALUE;
 		
