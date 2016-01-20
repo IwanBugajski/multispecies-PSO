@@ -56,6 +56,7 @@ public class ScatterChart extends Chart<List<Point>>{
 		}
 		
 		JFreeChart chart = ChartFactory.createScatterPlot(title, xTitle, yTitle, dataset);
+		chart.getPlot().setBackgroundPaint(Color.WHITE);
 		
 		if(subtitles != null) {
 			for(Title subtitle : subtitles)
@@ -93,7 +94,7 @@ public class ScatterChart extends Chart<List<Point>>{
 			
 			
 		}
-		
-		ChartUtilities.saveChartAsJPEG(file, chart, size[0], size[1]);
+
+		ChartSaveUtilities.saveChart(file, chart, size[0], size[1]);
 	}
 }
