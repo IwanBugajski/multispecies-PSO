@@ -16,6 +16,7 @@ public abstract class Chart<T> {
 	protected List<Title> subtitles;
 	protected boolean standardDeviation = false;
 	protected boolean logScale;
+	protected String fileFormat = "jpg";
 	
 	public Chart<T> addSubTitle(String subtitle){
 		if(subtitles == null) subtitles = new ArrayList<Title>();
@@ -62,7 +63,7 @@ public abstract class Chart<T> {
 	
 	public void saveWithDateStamp(String prefix){
 		String timeStamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(Calendar.getInstance().getTime());
-		String fileName = "results/" + prefix + "_" + timeStamp + ".jpg";
+		String fileName = "results/" + prefix + "_" + timeStamp + "." + fileFormat;
 		save(fileName);
 	}
 	
@@ -77,6 +78,11 @@ public abstract class Chart<T> {
 	
 	public Chart<T> setLogScale(){
 		logScale = true;
+		return this;
+	}
+
+	public Chart<T> setFileFormat(String fileFormat) {
+		this.fileFormat = fileFormat;
 		return this;
 	}
 	
