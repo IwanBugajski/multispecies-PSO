@@ -56,6 +56,7 @@ public class ScatterChart extends Chart<List<Point>>{
 		}
 		
 		JFreeChart chart = ChartFactory.createScatterPlot(title, xTitle, yTitle, dataset);
+		chart.getPlot().setBackgroundPaint(Color.WHITE);
 		
 		if(subtitles != null) {
 			for(Title subtitle : subtitles)

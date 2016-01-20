@@ -1,5 +1,6 @@
 package pl.edu.agh.miss.chart;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -48,6 +49,7 @@ public class SpeciesPieChart extends Chart<Integer>{
 		}
 		
 		JFreeChart chart = ChartFactory.createPieChart(title, dataset, true, true, false);
+		chart.getPlot().setBackgroundPaint(Color.WHITE);
 		
 		if(subtitles != null) {
 			for(Title subtitle : subtitles)
