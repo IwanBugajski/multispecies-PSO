@@ -1,5 +1,16 @@
 package pl.edu.agh.miss.graphs;
 
+import static pl.edu.agh.miss.Simulation.NUMBER_OF_PARTICLES;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import pl.edu.agh.miss.chart.Chart;
 import pl.edu.agh.miss.chart.Point;
 import pl.edu.agh.miss.chart.ScatterChart;
@@ -7,27 +18,17 @@ import pl.edu.agh.miss.dao.SimulationResultDAO;
 import pl.edu.agh.miss.output.SimulationResult;
 import pl.edu.agh.miss.particle.species.SpeciesType;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static pl.edu.agh.miss.Simulation.NUMBER_OF_ITERATIONS;
-import static pl.edu.agh.miss.Simulation.NUMBER_OF_PARTICLES;
-
 public class SpeciesShareGraphForArticle {
-	private static final String fitnessFunction = "Ackley";
+	private static final String fitnessFunction = "Rastrigin";
 	private final static int dimensions = 100;
-	private final static int iterations = 2000000;
+	private final static int iterations = 3000000;
 	private final static int totalParticles = 25;
 	private final static int NUMBER_OF_SPECIES = SpeciesType.values().length;
 	
 	private final static int [] counts = new int[] {0, 4, 11, 18, 25}; 
 	
 	private static Map<Integer, List<List<Double>>> filteredResults = new HashMap<Integer, List<List<Double>>>();
-	
+	private static Map<Integer, List<Double>> filteredQuality = new HashMap<Integer, List<Double>>();
 	
 	public static void main(String[] args) throws IOException {
 		for(int i = 1; i <= NUMBER_OF_SPECIES; i++) getPartialsForSpecies(i);
@@ -46,12 +47,15 @@ public class SpeciesShareGraphForArticle {
 		for(int cnt : counts){
 			List<List<Double>> partialResults = new ArrayList<List<Double>>();
 			filteredResults.put(cnt, partialResults);
+			List<Double> bestQuality = new ArrayList<Double>();
+			filteredQuality.put(cnt, bestQuality);
 		}
 		
 		for(SimulationResult result : results){
 			for(int cnt : counts){
 				if(meetsCriteria(result, speciesId, cnt)){
 					filteredResults.get(cnt).add(result.partial);
+					filteredQuality.get(cnt).add(result.bestFitness);
 					break;
 				}
 			}
@@ -62,9 +66,9 @@ public class SpeciesShareGraphForArticle {
 
 		Chart<List<Point>> chart =
 				new ScatterChart()
-						.setTitle("PSO " + fitnessFunction + " optimizing, ")
+						//.setTitle("PSO " + fitnessFunction + " optimizing, ")
 						.setXAxisTitle("Iterations")
-						.setYAxisTitle("Best Fitness")
+						.setYAxisTitle("Quality")
 						.setLogScale()
 						.setFileFormat("pdf");
 		
@@ -85,7 +89,7 @@ public class SpeciesShareGraphForArticle {
 					sum += values.get(i);
 				}
 				
-				double x = NUMBER_OF_ITERATIONS * i / 100;
+				double x = iterations * i / 100;
 				double y = sum / valuesList.size();
 				points.add(new Point(x, y));				
 			}
@@ -93,9 +97,53 @@ public class SpeciesShareGraphForArticle {
 			chart.addSeries(label, points);
 		}
 
-		chart.saveWithDateStamp("partial/species" + speciesId + "_totalParticles" + totalParticles +
-				"_dimensions" + dimensions + "_iterations" +
-				iterations + "_executions " + minExecutions + "/chart");
+		String path = "partial/article/" + fitnessFunction;
+		String suffix = "" + speciesId + "_" + totalParticles + "_" + dimensions + "_" + iterations + "_" + minExecutions;
+		
+		chart.saveWithDateStamp(path + "/chart_" + suffix);
+		
+		
+		
+		System.out.println("Preparing csv results");
+		File csvFile = new File("results/" + path + "/results_" + suffix + ".csv");
+		PrintWriter writer = new PrintWriter(csvFile);
+		writer.append("Count,Average Quality,Standard Deviation\n");
+		
+		for(int cnt : counts){
+			List<Double> values = filteredQuality.get(cnt);
+			double avg = average(values);
+			double stD = standardDeviation(values, avg);
+			writer.append("" + cnt + "," + round(avg) + "," + round(stD) + "\n");
+		}
+		
+		writer.close();
+	}
+	
+	private static double average(List<Double> values){
+		double cnt = values.size();
+		double sum = 0.0;
+		
+		for(double value : values){
+			sum += value;
+		}
+		
+		return sum / cnt;
+	}
+	
+	private static double standardDeviation(List<Double> values, double average){
+		double sum = 0.0;
+		
+		for(double value : values){
+			sum += Math.pow(average - value, 2.0);
+		}
+		
+		double variance = sum / values.size();
+		
+		return Math.sqrt(variance);
+	}
+	
+	private static double round(double a){
+		return  (double) Math.round(a * 100) / 100;
 	}
 	
 	private static boolean meetsCriteria(SimulationResult result, int speciesId, int speciesCnt){
