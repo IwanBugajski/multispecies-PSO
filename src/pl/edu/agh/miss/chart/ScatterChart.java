@@ -22,15 +22,19 @@ public class ScatterChart extends Chart<List<Point>>{
 	private Map<String, List<Point>> data;
 	private int xAxisLabelSize = 0; // 0 means default size
 	private int yAxisLabelSize = 0; // 0 means default size
-	
+	private int xAxisValuesSizes = 0; // 0 means default size
+	private int yAxisValuesSizes = 0; // 0 means default size
+
 	public ScatterChart(){
 		data = new HashMap<String, List<Point>>();
 	}
 
-	public ScatterChart(int xAxisLabelSize, int yAxisLabelSize) {
+	public ScatterChart(int xAxisLabelSize, int yAxisLabelSize, int xAxisValuesSizes, int yAxisValuesSizes) {
 		this();
 		this.xAxisLabelSize = xAxisLabelSize;
 		this.yAxisLabelSize = yAxisLabelSize;
+		this.xAxisValuesSizes = xAxisValuesSizes;
+		this.yAxisValuesSizes = yAxisValuesSizes;
 	}
 
 	@Override
@@ -109,8 +113,27 @@ public class ScatterChart extends Chart<List<Point>>{
 			changeYAxisLabelSize(chart, yAxisLabelSize);
 		}
 
+		if (xAxisValuesSizes > 0) {
+			changeXAxisValuesSize(chart, xAxisValuesSizes);
+		}
+
+		if (yAxisValuesSizes > 0) {
+			changeYAxisValuesSize(chart, yAxisValuesSizes);
+		}
 
 		ChartSaveUtilities.saveChart(file, chart, size[0], size[1]);
+	}
+
+	private static void changeXAxisValuesSize(JFreeChart chart, int yAxisValuesSizes) {
+		Font xLabelFont = chart.getXYPlot().getDomainAxis().getTickLabelFont();
+		Font xIncreasedLabelFont = new Font(xLabelFont.getName(), xLabelFont.getStyle(), yAxisValuesSizes);
+		chart.getXYPlot().getDomainAxis().setTickLabelFont(xIncreasedLabelFont);
+	}
+
+	private static void changeYAxisValuesSize(JFreeChart chart, int yAxisValuesSizes) {
+		Font yLabelFont = chart.getXYPlot().getRangeAxis().getTickLabelFont();
+		Font yIncreasedLabelFont = new Font(yLabelFont.getName(), yLabelFont.getStyle(), yAxisValuesSizes);
+		chart.getXYPlot().getRangeAxis().setTickLabelFont(yIncreasedLabelFont);
 	}
 
 	private static void changeYAxisLabelSize(JFreeChart chart, int yAxisLabelSize) {
