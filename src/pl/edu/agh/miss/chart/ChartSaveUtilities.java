@@ -21,22 +21,34 @@ import java.io.*;
 
 
 public class ChartSaveUtilities {
-    public static void saveChart(File file, JFreeChart freeChart, int width, int height) throws IOException {
+    public static void saveChart(File file, JFreeChart freeChart, int width, int height,
+                                 boolean saveLegendInAnotherFile) throws IOException {
         String fileExtension = Files.getFileExtension(file.getAbsolutePath());
+        LegendTitle legend1 = null;
         if (fileExtension.equals("jpg")) {
-            writeLegendAsJPG(file, freeChart);
+            if (saveLegendInAnotherFile) {
+                writeLegendAsJPG(file, freeChart);
+                legend1 = freeChart.getLegend();
+                freeChart.removeLegend();
+            }
 
-            LegendTitle legend1 = freeChart.getLegend();
-            freeChart.removeLegend();
             ChartUtilities.saveChartAsJPEG(file, freeChart, width, height);
-            freeChart.addLegend(legend1);
-        } else if (fileExtension.equals("pdf")) {
-            writeLegendAsPDF(file, freeChart);
 
-            LegendTitle legend1 = freeChart.getLegend();
-            freeChart.removeLegend();
+            if (saveLegendInAnotherFile) {
+                freeChart.addLegend(legend1);
+            }
+        } else if (fileExtension.equals("pdf")) {
+            if (saveLegendInAnotherFile) {
+                writeLegendAsPDF(file, freeChart);
+                legend1 = freeChart.getLegend();
+                freeChart.removeLegend();
+            }
+
             writeChartAsPDF(file, freeChart, width, height);
-            freeChart.addLegend(legend1);
+
+            if (saveLegendInAnotherFile) {
+                freeChart.addLegend(legend1);
+            }
         } else {
             throw new UnsupportedOperationException(
                     "Current version of ChartSaveUtilities.saveChart " +

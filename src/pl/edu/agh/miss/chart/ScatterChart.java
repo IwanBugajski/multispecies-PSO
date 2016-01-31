@@ -129,7 +129,7 @@ public class ScatterChart extends Chart<List<Point>>{
 			changeLegendFontSize(chart, legendFontSize);
 		}
 
-		ChartSaveUtilities.saveChart(file, chart, size[0], size[1]);
+		ChartSaveUtilities.saveChart(file, chart, size[0], size[1], false);
 	}
 
 	private void changeLegendFontSize(JFreeChart chart, int legendFontSize) {
