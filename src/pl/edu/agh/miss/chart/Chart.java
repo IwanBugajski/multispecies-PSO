@@ -17,6 +17,7 @@ public abstract class Chart<T> {
 	protected boolean standardDeviation = false;
 	protected boolean logScale;
 	protected String fileFormat = "jpg";
+	protected boolean saveLegendToAnotherFile = false;
 	
 	public Chart<T> addSubTitle(String subtitle){
 		if(subtitles == null) subtitles = new ArrayList<Title>();
@@ -46,6 +47,11 @@ public abstract class Chart<T> {
 	
 	public Chart<T> setHeight(int height){
 		size[1] = height;
+		return this;
+	}
+
+	public Chart<T> setSaveLegendToAnotherFile(boolean saveLegendToAnotherFile) {
+		this.saveLegendToAnotherFile = saveLegendToAnotherFile;
 		return this;
 	}
 	

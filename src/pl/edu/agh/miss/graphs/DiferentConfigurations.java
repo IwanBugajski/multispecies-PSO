@@ -55,6 +55,7 @@ public class DiferentConfigurations {
                         .setXAxisTitle("Iterations")
                         .setYAxisTitle("Quality")
                         .setLogScale()
+                        .setSaveLegendToAnotherFile(true)
                         .setFileFormat("pdf");
 
         for (int i=0; i < spawnConfigurations.length; i++) {
