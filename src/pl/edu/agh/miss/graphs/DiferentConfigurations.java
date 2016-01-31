@@ -50,7 +50,7 @@ public class DiferentConfigurations {
         System.out.println("Preparing chart data");
 
         Chart<List<Point>> chart =
-                new ScatterChart()
+                new ScatterChart(18, 18, 14, 14)
                         //.setTitle("PSO " + fitnessFunction + " optimizing, ")
                         .setXAxisTitle("Iterations")
                         .setYAxisTitle("Quality")
