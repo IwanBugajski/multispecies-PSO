@@ -13,6 +13,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.LogAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.title.Title;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -24,17 +25,20 @@ public class ScatterChart extends Chart<List<Point>>{
 	private int yAxisLabelSize = 0; // 0 means default size
 	private int xAxisValuesSizes = 0; // 0 means default size
 	private int yAxisValuesSizes = 0; // 0 means default size
+	private int legendFontSize = 0; // 0 means default size
 
 	public ScatterChart(){
 		data = new HashMap<String, List<Point>>();
 	}
 
-	public ScatterChart(int xAxisLabelSize, int yAxisLabelSize, int xAxisValuesSizes, int yAxisValuesSizes) {
+	public ScatterChart(int xAxisLabelSize, int yAxisLabelSize, int xAxisValuesSizes, int yAxisValuesSizes,
+						int legendFontSize) {
 		this();
 		this.xAxisLabelSize = xAxisLabelSize;
 		this.yAxisLabelSize = yAxisLabelSize;
 		this.xAxisValuesSizes = xAxisValuesSizes;
 		this.yAxisValuesSizes = yAxisValuesSizes;
+		this.legendFontSize = legendFontSize;
 	}
 
 	@Override
@@ -121,7 +125,18 @@ public class ScatterChart extends Chart<List<Point>>{
 			changeYAxisValuesSize(chart, yAxisValuesSizes);
 		}
 
+		if (legendFontSize > 0) {
+			changeLegendFontSize(chart, legendFontSize);
+		}
+
 		ChartSaveUtilities.saveChart(file, chart, size[0], size[1]);
+	}
+
+	private void changeLegendFontSize(JFreeChart chart, int legendFontSize) {
+		LegendTitle legend = chart.getLegend();
+		Font itemFont = legend.getItemFont();
+		Font newFontSize = new Font(itemFont.getName(), itemFont.getStyle(), legendFontSize);
+		legend.setItemFont(newFontSize);
 	}
 
 	private static void changeXAxisValuesSize(JFreeChart chart, int yAxisValuesSizes) {
