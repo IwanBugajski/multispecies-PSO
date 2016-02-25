@@ -21,7 +21,7 @@ import pl.edu.agh.miss.particle.species.SpeciesType;
 public class SpeciesShareGraphForArticle {
 	private static final String fitnessFunction = "Rastrigin";
 	private final static int dimensions = 100;
-	private final static int iterations = 3000000;
+	private final static int iterations = 2000000;
 	private final static int totalParticles = 25;
 	private final static int NUMBER_OF_SPECIES = SpeciesType.values().length;
 	
@@ -65,7 +65,7 @@ public class SpeciesShareGraphForArticle {
 		System.out.println("Preparing chart data");
 
 		Chart<List<Point>> chart =
-				new ScatterChart(18, 18, 14, 14)
+				new ScatterChart(22, 22, 16, 16)
 						//.setTitle("PSO " + fitnessFunction + " optimizing, ")
 						.setXAxisTitle("Iterations")
 						.setYAxisTitle("Quality")

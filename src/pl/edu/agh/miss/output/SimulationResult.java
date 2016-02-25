@@ -19,4 +19,7 @@ public class SimulationResult {
 	public int species7;
 	public int species8;
 	
+	public double initialVelocity;
+	public double finalVelocity;
+	
 }

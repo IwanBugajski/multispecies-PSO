@@ -3,7 +3,7 @@ package pl.edu.agh.miss.fitness;
 import net.sourceforge.jswarm_pso.FitnessFunction;
 
 public class Rastrigin extends FitnessFunction{
-	private final int A = 10;
+	private final int A = 5;
 	
 	public Rastrigin() {
 		super(false);

@@ -1,22 +1,31 @@
 package pl.edu.agh.miss.graphs;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import pl.edu.agh.miss.chart.Chart;
 import pl.edu.agh.miss.chart.Point;
 import pl.edu.agh.miss.chart.ScatterChart;
 import pl.edu.agh.miss.dao.SimulationResultDAO;
 import pl.edu.agh.miss.output.SimulationResult;
 
-import java.io.IOException;
-import java.util.*;
-
 public class DiferentConfigurations {
-    private static final String FITNESS_FUNCTION = "Rastrigin";
+    private static final String FITNESS_FUNCTION = "Schwefel";
+    private static final String PACKAGE = "pl.edu.agh.miss.fitness";
     private final static int DIMENSIONS = 100;
     private final static int ITERATIONS = 3000000;
     private final static int TOTAL_PARTICLES = 25;
 
     private final static int NUMBER_OF_SPECIES = 8;
     private final static int[][] SPAWN_CONFIGURATIONS = {
+    	{25,0,0,0,0,0,0,0},
         {5, 10, 5, 0, 0, 0, 0, 5},
         {5, 10, 5, 5, 0, 0, 0, 0},
         {0, 0, 0, 0, 7, 7, 7, 4},
@@ -33,7 +42,7 @@ public class DiferentConfigurations {
                                                 int totalParticles, int[][] spawnConfigurations) throws IOException {
         System.out.println("Getting results");
         SimulationResultDAO dao = SimulationResultDAO.getInstance();
-        List<SimulationResult> results = dao.getResults(fitnessFunction, dimensions, iterations, totalParticles);
+        List<SimulationResult> results = dao.getResults(PACKAGE + "." + fitnessFunction, dimensions, iterations, totalParticles);
         dao.close();
         System.out.println("Results loaded");
 
@@ -48,22 +57,28 @@ public class DiferentConfigurations {
                 divideSimulationResultsAccordingToSpawnConfiguration(spawnConfigurations, filteredResult);
 
         System.out.println("Preparing chart data");
+        
+        String path = "partial/configurations/" + fitnessFunction;
+        String suffix = "" + dimensions + "_" + iterations;
 
         Chart<List<Point>> chart =
-                new ScatterChart()
+                new ScatterChart(22, 22, 16, 16)
                         //.setTitle("PSO " + fitnessFunction + " optimizing, ")
                         .setXAxisTitle("Iterations")
                         .setYAxisTitle("Quality")
                         .setLogScale()
                         .setFileFormat("pdf");
+        
+
+		
 
         for (int i=0; i < spawnConfigurations.length; i++) {
-            String label = "Swarm " + Integer.toString(i);
+        	String label = i == 0 ? "Classic" : "Swarm " + Integer.toString(i+1);
             List<Point> points = new ArrayList<Point>();
 
             List<List<Double>> resultsForConfiguration =
                     dividedResultsByConfiguration.get(i);
-
+            
             for (int j = 0; j < COUNT_OF_PARTIALS; j++) {
                 double sum = 0;
 
@@ -79,28 +94,65 @@ public class DiferentConfigurations {
             chart.addSeries(label, points);
         }
 
-        String path = "configurations/" + fitnessFunction;
-        String suffix = "" + dimensions + "_" + iterations;
-
         chart.saveWithDateStamp(path + "/chart_" + suffix);
+        
+        
+        
+        File csvFile = new File("results/" + path + "/results_" + suffix + ".csv");
+		PrintWriter writer = new PrintWriter(csvFile);
+		writer.append("Swarm,Average Quality,Standard Deviation\n");
+        
+		for (int i=0; i < spawnConfigurations.length; i++) {
+			String label = i == 0 ? "Classic" : "Swarm " + Integer.toString(i+1);
+			List<Double> qualitiesForConfiguration = getQualitiesForConfiguration(spawnConfigurations[i], filteredResult);
+			
+			double avg = average(qualitiesForConfiguration);
+			double stD = standardDeviation(qualitiesForConfiguration, avg);
+			writer.append(label + "," + round(avg) + "," + round(stD) + "\n");
+		}
+		
+        writer.close();
+    }
+    
+    private static List<Double> getQualitiesForConfiguration(int [] configuration, List<SimulationResult> filteredResults){
+    	List<Double> result = new LinkedList<Double>();
+    	
+    	for (SimulationResult simulationResult : filteredResults) {
+    		final int[] speciesCount = getSpeciesConfiguration(simulationResult);
+    		if (Arrays.equals(configuration, speciesCount)) {
+    			result.add(simulationResult.bestFitness);
+    		}
+        }
+    	
+    	return result;
     }
 
     private static Map<Integer, List<List<Double>>> divideSimulationResultsAccordingToSpawnConfiguration(
             int[][] spawnConfigurations,
             List<SimulationResult> filteredResult) {
 
-        Map<Integer, List<List<Double>>> dividedSimulationResults = new HashMap<>();
+        Map<Integer, List<List<Double>>> dividedSimulationResults = new HashMap<Integer, List<List<Double>>>();
 
         for (int i = 0; i < spawnConfigurations.length; i++) {
-            List<List<Double>> resultForConfiguration = new LinkedList<>();
-            for (SimulationResult simulationResult : filteredResult) {
-                resultForConfiguration.add(simulationResult.partial);
-            }
+        	List<List<Double>> resultForConfiguration = getResultsForConfiguration(spawnConfigurations[i], filteredResult);
 
             dividedSimulationResults.put(i, resultForConfiguration);
         }
 
         return dividedSimulationResults;
+    }
+    
+    private static List<List<Double>> getResultsForConfiguration(int [] configuration, List<SimulationResult> filteredResult){
+    	List<List<Double>> result = new LinkedList<List<Double>>();
+    	
+    	for (SimulationResult simulationResult : filteredResult) {
+    		final int[] speciesCount = getSpeciesConfiguration(simulationResult);
+    		if (Arrays.equals(configuration, speciesCount)) {
+    			result.add(simulationResult.partial);
+    		}
+        }
+    	
+    	return result;
     }
 
     private static boolean meetsCriteria(int[][] spawnConfigurations, SimulationResult result) {
@@ -118,4 +170,31 @@ public class DiferentConfigurations {
                                      result.species4, result.species5, result.species6,
                                      result.species7, result.species8};
     }
+    
+    private static double average(List<Double> values){
+		double cnt = values.size();
+		double sum = 0.0;
+		
+		for(double value : values){
+			sum += value;
+		}
+		
+		return sum / cnt;
+	}
+	
+	private static double standardDeviation(List<Double> values, double average){
+		double sum = 0.0;
+		
+		for(double value : values){
+			sum += Math.pow(average - value, 2.0);
+		}
+		
+		double variance = sum / values.size();
+		
+		return Math.sqrt(variance);
+	}
+	
+	private static double round(double a){
+		return  (double) Math.round(a * 100) / 100;
+	}
 }
