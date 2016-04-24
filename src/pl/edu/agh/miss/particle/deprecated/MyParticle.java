@@ -12,7 +12,7 @@ public class MyParticle extends SpeciesParticle {
 	
 
 	public MyParticle(SpeciesType type) {
-		super(type, Simulation.NUMBER_OF_DIMENTIONS);
+		super(type, Simulation.NUMBER_OF_DIMENSIONS);
 	}
 
 }

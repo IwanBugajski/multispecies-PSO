@@ -1,6 +1,6 @@
 package pl.edu.agh.miss;
 
-import static pl.edu.agh.miss.Simulation.NUMBER_OF_DIMENTIONS;
+import static pl.edu.agh.miss.Simulation.NUMBER_OF_DIMENSIONS;
 import static pl.edu.agh.miss.Simulation.NUMBER_OF_ITERATIONS;
 import static pl.edu.agh.miss.Simulation.NUMBER_OF_SKIPPED_ITERATIONS;
 
@@ -17,7 +17,7 @@ import pl.edu.agh.miss.chart.ChartCombiner;
 import pl.edu.agh.miss.chart.Point;
 import pl.edu.agh.miss.chart.ScatterChart;
 import pl.edu.agh.miss.chart.SpeciesPieChart;
-import pl.edu.agh.miss.multidimensional.RastriginFunction;
+import pl.edu.agh.miss.fitness.Rastrigin;
 import pl.edu.agh.miss.particle.species.SpeciesType;
 import pl.edu.agh.miss.swarm.MultiSwarm;
 import pl.edu.agh.miss.swarm.SwarmInformation;
@@ -39,7 +39,7 @@ public class Comparison {
 			//run("Swarm 3", new int[] {5, 5, 0, 4, 2, 2, 2, 4});
 		}
 		
-		Chart chart = new ScatterChart().setTitle("PSO Ristrigin optimizing, " + NUMBER_OF_DIMENTIONS + " dimensions, " + NUMBER_OF_ITERATIONS + " iterations").
+		Chart chart = new ScatterChart().setTitle("PSO Ristrigin optimizing, " + NUMBER_OF_DIMENSIONS + " dimensions, " + NUMBER_OF_ITERATIONS + " iterations").
 				setXAxisTitle("Iterations").setYAxisTitle("Fitness").addSubTitle("" + EXECUTIONS + " executions");
 		
 		for(String swarmName : results.keySet()){
@@ -104,7 +104,7 @@ public class Comparison {
 		}
 		
 		SwarmInformation [] swarmInformationsArray = new SwarmInformation [swarmInformations.size()]; 
-		MultiSwarm multiSwarm = new MultiSwarm(swarmInformations.toArray(swarmInformationsArray), new RastriginFunction());
+		MultiSwarm multiSwarm = new MultiSwarm(swarmInformations.toArray(swarmInformationsArray), new Rastrigin());
 		
 		Neighborhood neighbourhood = new Neighborhood1D(cnt / 5, true);
 		multiSwarm.setNeighborhood(neighbourhood);

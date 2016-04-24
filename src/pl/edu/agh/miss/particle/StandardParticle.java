@@ -9,6 +9,6 @@ public class StandardParticle extends Particle{
 	}
 	
 	public StandardParticle(){
-		super(Simulation.NUMBER_OF_DIMENTIONS);
+		super(Simulation.NUMBER_OF_DIMENSIONS);
 	}
 }

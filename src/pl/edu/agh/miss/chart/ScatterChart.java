@@ -1,8 +1,6 @@
 package pl.edu.agh.miss.chart;
 
-import java.awt.Color;
-import java.awt.Paint;
-import java.awt.Shape;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -22,9 +20,21 @@ import org.jfree.util.ShapeUtilities;
 
 public class ScatterChart extends Chart<List<Point>>{
 	private Map<String, List<Point>> data;
-	
+	private int xAxisLabelSize = 0; // 0 means default size
+	private int yAxisLabelSize = 0; // 0 means default size
+	private int xAxisValuesSizes = 0; // 0 means default size
+	private int yAxisValuesSizes = 0; // 0 means default size
+
 	public ScatterChart(){
 		data = new HashMap<String, List<Point>>();
+	}
+
+	public ScatterChart(int xAxisLabelSize, int yAxisLabelSize, int xAxisValuesSizes, int yAxisValuesSizes) {
+		this();
+		this.xAxisLabelSize = xAxisLabelSize;
+		this.yAxisLabelSize = yAxisLabelSize;
+		this.xAxisValuesSizes = xAxisValuesSizes;
+		this.yAxisValuesSizes = yAxisValuesSizes;
 	}
 
 	@Override
@@ -56,7 +66,8 @@ public class ScatterChart extends Chart<List<Point>>{
 		}
 		
 		JFreeChart chart = ChartFactory.createScatterPlot(title, xTitle, yTitle, dataset);
-		
+		chart.getPlot().setBackgroundPaint(Color.WHITE);
+
 		if(subtitles != null) {
 			for(Title subtitle : subtitles)
 			chart.addSubtitle(subtitle);
@@ -90,10 +101,50 @@ public class ScatterChart extends Chart<List<Point>>{
 				renderer.setSeriesShape(i + 1, shape);
 				renderer.setSeriesShape(i + 2, shape);
 			}
-			
-			
+
+
 		}
-		
-		ChartUtilities.saveChartAsJPEG(file, chart, size[0], size[1]);
+
+		if (xAxisLabelSize > 0) {
+			changeXAxisLabelSize(chart, xAxisLabelSize);
+		}
+
+		if (yAxisLabelSize > 0) {
+			changeYAxisLabelSize(chart, yAxisLabelSize);
+		}
+
+		if (xAxisValuesSizes > 0) {
+			changeXAxisValuesSize(chart, xAxisValuesSizes);
+		}
+
+		if (yAxisValuesSizes > 0) {
+			changeYAxisValuesSize(chart, yAxisValuesSizes);
+		}
+
+		ChartSaveUtilities.saveChart(file, chart, size[0], size[1]);
+	}
+
+	private static void changeXAxisValuesSize(JFreeChart chart, int yAxisValuesSizes) {
+		Font xLabelFont = chart.getXYPlot().getDomainAxis().getTickLabelFont();
+		Font xIncreasedLabelFont = new Font(xLabelFont.getName(), xLabelFont.getStyle(), yAxisValuesSizes);
+		chart.getXYPlot().getDomainAxis().setTickLabelFont(xIncreasedLabelFont);
+	}
+
+	private static void changeYAxisValuesSize(JFreeChart chart, int yAxisValuesSizes) {
+		Font yLabelFont = chart.getXYPlot().getRangeAxis().getTickLabelFont();
+		Font yIncreasedLabelFont = new Font(yLabelFont.getName(), yLabelFont.getStyle(), yAxisValuesSizes);
+		chart.getXYPlot().getRangeAxis().setTickLabelFont(yIncreasedLabelFont);
+	}
+
+	private static void changeYAxisLabelSize(JFreeChart chart, int yAxisLabelSize) {
+		Font yLabelFont = chart.getXYPlot().getRangeAxis().getLabelFont();
+		Font yIncreasedLabelFont = new Font(yLabelFont.getName(), yLabelFont.getStyle(), yAxisLabelSize);
+		chart.getXYPlot().getRangeAxis().setLabelFont(yIncreasedLabelFont);
+	}
+
+	private static void changeXAxisLabelSize(JFreeChart chart, int xAxisLabelSize) {
+		Font xLabelFont = chart.getXYPlot().getDomainAxis().getLabelFont();
+		Font xIncreasedLabelFont = new Font(xLabelFont.getName(), xLabelFont.getStyle(), xAxisLabelSize);
+		chart.getXYPlot().getDomainAxis().setLabelFont(xIncreasedLabelFont);
 	}
 }
