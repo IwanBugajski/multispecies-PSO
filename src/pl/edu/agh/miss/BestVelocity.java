@@ -95,7 +95,7 @@ public class BestVelocity {
 		
 		//get final velocity
 		if(args.length >= 7){
-			initialVelocity = Double.valueOf(args[6]);
+			finalVelocity = Double.valueOf(args[6]);
 		}
 		
 		//create array of species share
@@ -159,6 +159,7 @@ public class BestVelocity {
 		multiSwarm.setMinPosition(-MAX_POS);
 		
 		multiSwarm.setVelocityFunction(new LinearVelocityFunction(initialVelocity, finalVelocity).setUpdatesCnt(VELOCITY_UPDATES).setUpdatesInterval(NUMBER_OF_ITERATIONS / VELOCITY_UPDATES));
+		multiSwarm.init();
 		
 		List<Double> partial = new ArrayList<Double>(NUMBER_OF_ITERATIONS / 100);
 		
@@ -193,6 +194,9 @@ public class BestVelocity {
 		output.species6 = particles[5];
 		output.species7 = particles[6];
 		output.species8 = particles[7];
+		
+		output.initialVelocity = initialVelocity;
+		output.finalVelocity = finalVelocity;
 		
 		return output;
 	}

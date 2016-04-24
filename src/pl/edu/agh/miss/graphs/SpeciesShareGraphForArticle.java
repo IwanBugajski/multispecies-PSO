@@ -21,7 +21,7 @@ import pl.edu.agh.miss.particle.species.SpeciesType;
 public class SpeciesShareGraphForArticle {
 	private static final String fitnessFunction = "Rastrigin";
 	private final static int dimensions = 100;
-	private final static int iterations = 2000000;
+	private final static int iterations = 3000000;
 	private final static int totalParticles = 25;
 	private final static int NUMBER_OF_SPECIES = SpeciesType.values().length;
 	

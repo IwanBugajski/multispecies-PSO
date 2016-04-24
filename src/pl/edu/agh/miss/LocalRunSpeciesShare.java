@@ -4,9 +4,7 @@ import static pl.edu.agh.miss.Simulation.NUMBER_OF_DIMENSIONS;
 import static pl.edu.agh.miss.Simulation.NUMBER_OF_ITERATIONS;
 import static pl.edu.agh.miss.Simulation.NUMBER_OF_PARTICLES;
 
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +12,7 @@ import net.sourceforge.jswarm_pso.FitnessFunction;
 import net.sourceforge.jswarm_pso.Neighborhood;
 import net.sourceforge.jswarm_pso.Neighborhood1D;
 import pl.edu.agh.miss.dao.SimulationResultDAO;
-import pl.edu.agh.miss.fitness.Rastrigin;
+import pl.edu.agh.miss.fitness.Ackley;
 import pl.edu.agh.miss.output.SimulationOutput;
 import pl.edu.agh.miss.output.SimulationOutputError;
 import pl.edu.agh.miss.output.SimulationOutputOk;
@@ -23,90 +21,93 @@ import pl.edu.agh.miss.particle.species.SpeciesType;
 import pl.edu.agh.miss.swarm.MultiSwarm;
 import pl.edu.agh.miss.swarm.SwarmInformation;
 
-import com.google.gson.Gson;
-
-/**
- * 
- * @author iwanb
- * command line args:
- * - function name - must be the same as class from pl.edu.agh.miss.fitness
- * - number of dimensions
- * - number of iterations
- * - species id
- * - proportional share of given species
- */
-public class SpeciesShare {
+public class LocalRunSpeciesShare {
 	private static String className;
-	private static int speciesId = 1;
-	private static int speciesCnt = NUMBER_OF_PARTICLES;
-	private static int numberOfSpecies = SpeciesType.values().length;
+	private static List<Thread> threads;
+	private final static int [] speciesShares = new int [] {0, 4, 11, 18, 25};
+	private final static int NUMBER_OF_SPECIES = SpeciesType.values().length;
 
-	@SuppressWarnings("unchecked")
-	public static void main(String[] args) throws InstantiationException, IllegalAccessException, IOException {
-		//get optimization problem
-		FitnessFunction fitnessFunction = null;
-		Class<? extends FitnessFunction> fitnessFunctionClass = Rastrigin.class;
-		className = args.length >= 1 ? args[0] : "Rastrigin";
-		final String packageName = "pl.edu.agh.miss.fitness";
-		try {
-			fitnessFunctionClass = (Class<FitnessFunction>) Class.forName(packageName + "." + className);
-		} catch (ClassNotFoundException e) {
-			System.out.println(className + " " + e.getMessage() + " using Rastrigin function");
-		} finally {
-			fitnessFunction = fitnessFunctionClass.newInstance();
+	public static void main(String[] args) throws InstantiationException, IllegalAccessException, IOException, InterruptedException {
+		FitnessFunction fitnessFunction = new Ackley();
+		NUMBER_OF_DIMENSIONS = 100;
+		NUMBER_OF_ITERATIONS = 10000;
+		int executions = 30;
+		
+		className = fitnessFunction.getClass().getName();
+		
+		threads = new ArrayList<Thread>();
+		
+		for(int species = 1; species <= NUMBER_OF_SPECIES; species++){
+			runParallel(fitnessFunction, species, executions);
 		}
 		
-		//get number of dimensions
-		if(args.length >= 2){
-			NUMBER_OF_DIMENSIONS = Integer.valueOf(args[1]);
-			if(NUMBER_OF_DIMENSIONS <= 0) NUMBER_OF_DIMENSIONS = 10;
+		for(Thread thread : threads){
+			thread.join();
 		}
-		//get number of iterations
-		if(args.length >= 3){
-			NUMBER_OF_ITERATIONS = Integer.valueOf(args[2]);
-			if(NUMBER_OF_ITERATIONS <= 0) NUMBER_OF_ITERATIONS = 1000;
-		}
-		//get species id
-		if(args.length >= 4){
-			speciesId = Integer.valueOf(args[3]);
-			if(speciesId <= 0) speciesId = 1;
-			if(speciesId > numberOfSpecies) speciesId = 1;
-		}
-		//get species id
-		if(args.length >= 5){
-			speciesCnt = Integer.valueOf(args[4]);
-			if(speciesCnt < 0) speciesCnt = NUMBER_OF_PARTICLES;
-			if(speciesCnt > NUMBER_OF_PARTICLES) speciesCnt = NUMBER_OF_PARTICLES;
-		}
-		
-		//create array of species share
-		int [] speciesArray = new int[numberOfSpecies];
-		
-		for(int i = 0; i < numberOfSpecies; i++){
-			if(i == speciesId - 1){
-				speciesArray[i] = speciesCnt;
-			} else {
-				speciesArray[i] = (NUMBER_OF_PARTICLES - speciesCnt) / (numberOfSpecies - 1); 
+	}
+
+	private static void runParallel(final FitnessFunction fitnessFunction, final int speciesId, final int executions){
+		Thread thread = new Thread(new Runnable() {
+			
+			public void run() {
+				for(int share : speciesShares){
+					System.out.println("Species " + speciesId + " share " + share);
+					
+					int [] speciesArray = new int[NUMBER_OF_SPECIES];
+					
+					for(int i = 0; i < NUMBER_OF_SPECIES; i++){
+						if(i == speciesId - 1){
+							speciesArray[i] = share;
+						} else {
+							speciesArray[i] = (NUMBER_OF_PARTICLES - share) / (NUMBER_OF_SPECIES - 1); 
+						}
+					}
+					
+					for(int i = 0; i < executions; i++){
+						try {
+							simulate(fitnessFunction, speciesArray, speciesId, executions, i);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
 			}
-		}
+		});
 		
+		threads.add(thread);
+		thread.start();
+	}
+
+	private static void simulate(FitnessFunction fitnessFunction,
+			int[] speciesArray, int id, int executions, int i) throws IOException {
 		SimulationOutput output = null;
 		try{
+			long tic = System.currentTimeMillis();
 			SimulationResult result = run(speciesArray, fitnessFunction);
+			long toc = System.currentTimeMillis();
+			long diff = toc - tic;
+			long seconds = diff / 1000L;
+			long minutes = seconds / 60L;
+			long hours = minutes / 60L;
+			System.out.println("" + id + ": Execution " + (i+1) + " of " + executions);
+			System.out.println("\tDone in: " + hours + " hours " + (minutes%60) + " minutes " + (seconds % 60) + " seconds");
+			
 			output = new SimulationOutputOk();
 			((SimulationOutputOk) output).results = result;
 			SimulationResultDAO.getInstance().writeResult(result);
 			SimulationResultDAO.getInstance().close();
+			System.out.println(result.bestFitness);
 		} catch (Throwable e){
 			output = new SimulationOutputError();
 			((SimulationOutputError)output).reason = e.toString() + ": " + e.getMessage();
 		} finally {
-			Writer writer = new FileWriter("output.json");
-			Gson gson = new Gson();
-			gson.toJson(output, writer);
-			writer.close();
+//			Writer writer = new FileWriter("output.json");
+//			Gson gson = new Gson();
+//			gson.toJson(output, writer);
+//			writer.close();
 		}
 	}
+	
 
 	private static SimulationResult run(int [] particles, FitnessFunction fitnessFunction) {
 		int cnt = 0;
@@ -129,7 +130,6 @@ public class SpeciesShare {
 		Neighborhood neighbourhood = new Neighborhood1D(cnt / 5, true);
 		multiSwarm.setNeighborhood(neighbourhood);
 		
-		
 		multiSwarm.setInertia(0.95);
 		multiSwarm.setNeighborhoodIncrement(0.9);
 		multiSwarm.setParticleIncrement(0.9);
@@ -138,7 +138,9 @@ public class SpeciesShare {
 		multiSwarm.setMaxPosition(20);
 		multiSwarm.setMinPosition(-20);
 		
-		multiSwarm.setAbsMaxVelocity(1.0);
+//		multiSwarm.setVelocityFunction(new LinearVelocityFunction(0.1, 2.5).setUpdatesCnt(100).setUpdatesInterval(20));
+		multiSwarm.setAbsMaxVelocity(2.0);
+		
 		multiSwarm.init();
 		
 		List<Double> partial = new ArrayList<Double>(NUMBER_OF_ITERATIONS / 100);
@@ -150,12 +152,8 @@ public class SpeciesShare {
 			//display partial results
 			if(NUMBER_OF_ITERATIONS > 100 && (i % (NUMBER_OF_ITERATIONS / 100) == 0)){
 				partial.add(multiSwarm.getBestFitness());
-				System.out.println(multiSwarm.getBestFitness());
 			}
 		}
-		
-		//print final results
-		System.out.println(multiSwarm.getBestFitness());
 		
 		//create output.json
 		SimulationResult output = new SimulationResult();

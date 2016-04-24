@@ -12,7 +12,7 @@ import org.jfree.chart.title.Title;
 
 public abstract class Chart<T> {
 	protected String title, xTitle, yTitle;
-	protected int [] size = new int [] {640, 480};
+	protected int [] size = new int [] {510, 480};
 	protected List<Title> subtitles;
 	protected boolean standardDeviation = false;
 	protected boolean logScale;

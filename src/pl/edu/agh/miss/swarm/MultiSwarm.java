@@ -7,6 +7,8 @@ import net.sourceforge.jswarm_pso.Swarm;
 import net.sourceforge.jswarm_pso.VariablesUpdate;
 import pl.edu.agh.miss.particle.MyParticle;
 import pl.edu.agh.miss.particle.species.SpeciesParticle;
+import pl.edu.agh.miss.transition.order.DefaultOrderFunction;
+import pl.edu.agh.miss.transition.order.OrderFunction;
 import pl.edu.agh.miss.velocity.ConstantVelocityFunction;
 import pl.edu.agh.miss.velocity.VelocityFunction;
 
@@ -14,6 +16,7 @@ public class MultiSwarm extends Swarm {
 	
 	private SwarmInformation swarmInfos[];
 	private VelocityFunction velocityFunction = new ConstantVelocityFunction(2.0);
+	private OrderFunction orderFunction = new DefaultOrderFunction();
 	private long evolveCnt = 0L;
 	
 	
@@ -63,10 +66,14 @@ public class MultiSwarm extends Swarm {
 		this.velocityFunction = function;
 	}
 	
+	public void setOrderFunction(OrderFunction function){
+		this.orderFunction = function;
+	}
+	
 	@Override
 	public void init() {
 		// Init particles
-		particles = new Particle[numberOfParticles];
+		particles = new SpeciesParticle[numberOfParticles];
 
 		// Check constraints (they will be used to initialize particles)
 		if (maxPosition == null) throw new RuntimeException("maxPosition array is null!");
@@ -124,6 +131,10 @@ public class MultiSwarm extends Swarm {
 		
 		if(velocityFunction != null && evolveCnt % velocityFunction.getUpdatesInterval() == 0){
 			setAbsMaxVelocity(velocityFunction.getNext());
+		}
+		
+		if(orderFunction != null && evolveCnt % orderFunction.getUpdatesInterval() == 0){
+			orderFunction.calculate((SpeciesParticle [])particles);
 		}
 	}
 

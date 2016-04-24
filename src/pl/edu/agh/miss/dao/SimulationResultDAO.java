@@ -22,7 +22,8 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 
 public class SimulationResultDAO {
-    private static final String COLLECTION_NAME = "simulation_results";
+//    private static final String COLLECTION_NAME = "bestVelocity";
+    private static final String COLLECTION_NAME = "combinationsSmall";
 
 	private static final String DB_PROPERTIES_FILE = "db.properties";
 
@@ -82,6 +83,8 @@ public class SimulationResultDAO {
     		result.species7 = next.getInteger("species7");
     		result.species8 = next.getInteger("species8");
     		result.bestFitness = next.getDouble("bestFitness");
+    		
+    		//TODO - best velocity
     		
 			List<Double> partial = (List<Double>) next.get("partial");
     		result.partial = partial;

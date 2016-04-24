@@ -1,5 +1,7 @@
 package pl.edu.agh.miss.particle.species;
 
+import java.awt.Color;
+
 public enum SpeciesType {
 	ALL(0),
 	GLOBAL_AND_LOCAL(1),
@@ -11,18 +13,27 @@ public enum SpeciesType {
 	RANDOM(7);
 	
 	public final int type;
-	private final String [] typeNames = new String [] {
+	private final Color color;
+	
+	private static final String [] typeNames = new String [] {
 			"Normal", "Global and local", "Global and neighbour", "Local and neighbour", 
 			"Global only", "Local only", "Neighbour only", "Random weights" 
 	};
 	
+	
 	private SpeciesType(int type){
 		this.type = type;
+		int rgb = 255 / (8 - type);
+		this.color = new Color(rgb, rgb, rgb);
 	}
 	
 	@Override
 	public String toString(){
 		return typeNames[type];
+	}
+	
+	public Color getColor(){
+		return color;
 	}
 	
 	public double [] getWeights(){

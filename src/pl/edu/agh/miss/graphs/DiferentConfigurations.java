@@ -17,7 +17,7 @@ import pl.edu.agh.miss.dao.SimulationResultDAO;
 import pl.edu.agh.miss.output.SimulationResult;
 
 public class DiferentConfigurations {
-    private static final String FITNESS_FUNCTION = "Schwefel";
+    private static final String FITNESS_FUNCTION = "Ackley";
     private static final String PACKAGE = "pl.edu.agh.miss.fitness";
     private final static int DIMENSIONS = 100;
     private final static int ITERATIONS = 3000000;
