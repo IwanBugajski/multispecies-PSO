@@ -7,6 +7,7 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
+
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 
@@ -31,7 +32,8 @@ public class ChartSaveUtilities {
         }
     }
 
-    public static void writeChartAsPDF(File file, JFreeChart chart, int width, int height) throws IOException {
+    @SuppressWarnings("deprecation")
+	public static void writeChartAsPDF(File file, JFreeChart chart, int width, int height) throws IOException {
         com.itextpdf.text.Rectangle pagesize = new com.itextpdf.text.Rectangle(width, height);
         Document document = new Document(pagesize, 50, 50, 50, 50);
         try {

@@ -51,6 +51,11 @@ public class SwarmInformation {
 	public void addParticle(Particle particle) {
 		this.particles.add(particle);
 	}
+	
+	public void removeParticle(Particle particle){
+		this.particles.remove(particle);
+	}
+	
 	public List<Particle> getParticles() {
 		return particles;
 	}

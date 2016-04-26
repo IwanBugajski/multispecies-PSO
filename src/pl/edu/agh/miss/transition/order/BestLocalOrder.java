@@ -34,9 +34,13 @@ public class BestLocalOrder extends OrderFunction {
 	}
 
 	protected SpeciesType [] sort(Map<SpeciesType, Double> map){
+		return sort(map, false);
+	}
+	
+	protected SpeciesType [] sort(Map<SpeciesType, Double> map, boolean descending){
 		SpeciesType [] results = new SpeciesType[map.size()];
 		List<Map.Entry<SpeciesType, Double>> entryList = new ArrayList<Entry<SpeciesType, Double>>(map.entrySet());
-		Collections.sort(entryList, new MapComparator());
+		Collections.sort(entryList, new MapComparator(descending));
 		
 		for(int i = 0; i < map.size(); i++){
 			results[i] = entryList.get(i).getKey();

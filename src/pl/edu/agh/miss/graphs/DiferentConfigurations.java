@@ -23,7 +23,6 @@ public class DiferentConfigurations {
     private final static int ITERATIONS = 3000000;
     private final static int TOTAL_PARTICLES = 25;
 
-    private final static int NUMBER_OF_SPECIES = 8;
     private final static int[][] SPAWN_CONFIGURATIONS = {
     	{25,0,0,0,0,0,0,0},
         {5, 10, 5, 0, 0, 0, 0, 5},

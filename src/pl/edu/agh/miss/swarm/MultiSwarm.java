@@ -9,6 +9,8 @@ import pl.edu.agh.miss.particle.MyParticle;
 import pl.edu.agh.miss.particle.species.SpeciesParticle;
 import pl.edu.agh.miss.transition.order.DefaultOrderFunction;
 import pl.edu.agh.miss.transition.order.OrderFunction;
+import pl.edu.agh.miss.transition.shift.DefaultShiftFunction;
+import pl.edu.agh.miss.transition.shift.ShiftFunction;
 import pl.edu.agh.miss.velocity.ConstantVelocityFunction;
 import pl.edu.agh.miss.velocity.VelocityFunction;
 
@@ -17,6 +19,7 @@ public class MultiSwarm extends Swarm {
 	private SwarmInformation swarmInfos[];
 	private VelocityFunction velocityFunction = new ConstantVelocityFunction(2.0);
 	private OrderFunction orderFunction = new DefaultOrderFunction();
+	private ShiftFunction shiftFunction = new DefaultShiftFunction();
 	private long evolveCnt = 0L;
 	
 	
@@ -68,6 +71,10 @@ public class MultiSwarm extends Swarm {
 	
 	public void setOrderFunction(OrderFunction function){
 		this.orderFunction = function;
+	}
+	
+	public void setShiftFunction(ShiftFunction function){
+		this.shiftFunction = function;
 	}
 	
 	@Override
@@ -135,6 +142,10 @@ public class MultiSwarm extends Swarm {
 		
 		if(orderFunction != null && evolveCnt % orderFunction.getUpdatesInterval() == 0){
 			orderFunction.calculate((SpeciesParticle [])particles);
+		}
+		
+		if(shiftFunction != null && orderFunction != null && evolveCnt % shiftFunction.getUpdatesInterval() == 0){
+			shiftFunction.shift(swarmInfos, orderFunction.getOrder());
 		}
 	}
 

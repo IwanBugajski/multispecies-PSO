@@ -1,6 +1,9 @@
 package pl.edu.agh.miss.chart;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Paint;
+import java.awt.Shape;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -8,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.LogAxis;
 import org.jfree.chart.plot.XYPlot;

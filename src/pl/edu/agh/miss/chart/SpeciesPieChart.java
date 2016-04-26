@@ -1,13 +1,12 @@
 package pl.edu.agh.miss.chart;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.title.Title;
 import org.jfree.data.general.DefaultPieDataset;
