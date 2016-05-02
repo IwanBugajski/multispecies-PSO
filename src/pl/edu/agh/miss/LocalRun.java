@@ -19,8 +19,8 @@ import pl.edu.agh.miss.output.SimulationResult;
 import pl.edu.agh.miss.particle.species.SpeciesType;
 import pl.edu.agh.miss.swarm.MultiSwarm;
 import pl.edu.agh.miss.swarm.SwarmInformation;
-import pl.edu.agh.miss.transition.order.BestAvgLocalOrder;
 import pl.edu.agh.miss.transition.order.BestWorstLocalOrder;
+import pl.edu.agh.miss.transition.shift.BestLocalShift;
 
 /**
  * 
@@ -64,7 +64,7 @@ public class LocalRun {
 				for(int i = 0; i < executions; i++){
 					try {
 						simulate(fitnessFunction, speciesArray, id, executions, i);
-					} catch (IOException e) {
+					} catch (Throwable e) {
 						e.printStackTrace();
 					}
 				}
@@ -95,6 +95,7 @@ public class LocalRun {
 //			SimulationResultDAO.getInstance().close();
 			System.out.println(result.bestFitness);
 		} catch (Throwable e){
+			e.printStackTrace();
 			output = new SimulationOutputError();
 			((SimulationOutputError)output).reason = e.toString() + ": " + e.getMessage();
 		} finally {
@@ -116,7 +117,6 @@ public class LocalRun {
 				
 				SpeciesType type = SpeciesType.values()[i];
 				SwarmInformation swarmInformation = new SwarmInformation(particles[i], type);
-				
 				swarmInformations.add(swarmInformation);
 			}
 		}
@@ -138,6 +138,7 @@ public class LocalRun {
 //		multiSwarm.setVelocityFunction(new LinearVelocityFunction(0.1, 2.5).setUpdatesCnt(100).setUpdatesInterval(20));
 //		multiSwarm.setOrderFunction(new BestLocalOrder().setUpdatesInterval(500));
 		multiSwarm.setOrderFunction(new BestWorstLocalOrder().setUpdatesInterval(500));
+		multiSwarm.setShiftFunction(new BestLocalShift().setUpdatesInterval(500));
 
 		multiSwarm.setAbsMaxVelocity(2.0);
 		multiSwarm.init();

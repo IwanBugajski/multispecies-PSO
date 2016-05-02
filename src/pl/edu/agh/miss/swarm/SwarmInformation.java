@@ -12,15 +12,15 @@ import pl.edu.agh.miss.particle.species.SpeciesType;
 
 public class SwarmInformation {
 	
-	private int numberOfParticles;
 	private SpeciesType type;
 	private List<Particle> particles = new ArrayList<Particle>();
 	private SpeciesParticle sampleParticle;
 	private ParticleUpdate particleUpdate;
+	private int numberOfParticles = 0;
 	
 	
 	public SwarmInformation(int numberOfParticles, SpeciesParticle sampleParticle) {
-		this.numberOfParticles = numberOfParticles;
+		this.numberOfParticles  = numberOfParticles;
 		this.type = sampleParticle.getType();
 		this.sampleParticle = sampleParticle;
 		this.particleUpdate = new SpeciesParticleUpdate(sampleParticle);
@@ -34,7 +34,6 @@ public class SwarmInformation {
 	 * @deprecated
 	 */
 	public SwarmInformation(int numberOfParticles, SpeciesParticle sampleParticle, ParticleUpdate particleUpdate) {
-		this.numberOfParticles = numberOfParticles;
 		this.type = sampleParticle.getType();
 		this.sampleParticle = sampleParticle;
 		this.particleUpdate = particleUpdate;
@@ -50,10 +49,12 @@ public class SwarmInformation {
 	
 	public void addParticle(Particle particle) {
 		this.particles.add(particle);
+		numberOfParticles++;
 	}
 	
 	public void removeParticle(Particle particle){
 		this.particles.remove(particle);
+		numberOfParticles--;
 	}
 	
 	public List<Particle> getParticles() {

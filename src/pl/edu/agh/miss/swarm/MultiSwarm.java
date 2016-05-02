@@ -93,7 +93,7 @@ public class MultiSwarm extends Swarm {
 		for (SwarmInformation swarmInfo : swarmInfos) {
 			for (int i = 0; i < swarmInfo.getNumberOfParticles(); ++i) {
 				SpeciesParticle particle = new MyParticle(swarmInfo.getType());
-				swarmInfo.addParticle(particle);
+				swarmInfo.getParticles().add(particle);
 				particles[i+particleOffset] = particle;
 				particles[i+particleOffset].init(maxPosition, minPosition, maxVelocity, minVelocity);
 			}

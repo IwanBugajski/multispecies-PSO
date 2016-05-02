@@ -1,6 +1,5 @@
 package pl.edu.agh.miss.particle.species;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import net.sourceforge.jswarm_pso.Particle;
@@ -11,16 +10,21 @@ public class SpeciesParticle extends Particle {
 	
 	public SpeciesParticle(SpeciesType type, int numberOfDimentions) {
 		super(numberOfDimentions);
-		this.type = type;
+		this.setType(type);
 	}
 	
 	public SpeciesType getType() {
 		return type;
 	}
 	
+	public void setType(SpeciesType type) {
+		this.type = type;
+	}
+	
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public SpeciesParticle selfFactory(SpeciesType type) {
 		Class cl = this.getClass();
-		Constructor cons;
 
 		try {
 			return (SpeciesParticle) cl.asSubclass(SpeciesParticle.class).getConstructor(SpeciesType.class).newInstance(type);
@@ -38,4 +42,5 @@ public class SpeciesParticle extends Particle {
 			throw new RuntimeException(e);
 		}
 	}
+
 }
