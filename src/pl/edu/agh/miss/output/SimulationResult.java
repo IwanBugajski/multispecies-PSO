@@ -22,4 +22,7 @@ public class SimulationResult {
 	public double initialVelocity;
 	public double finalVelocity;
 	
+	public String orderFunction;
+	public String shiftFunction;
+	
 }

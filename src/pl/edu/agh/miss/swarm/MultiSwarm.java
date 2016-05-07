@@ -69,12 +69,24 @@ public class MultiSwarm extends Swarm {
 		this.velocityFunction = function;
 	}
 	
+	public VelocityFunction getVelocityFunction(){
+		return velocityFunction;
+	}
+	
 	public void setOrderFunction(OrderFunction function){
 		this.orderFunction = function;
 	}
 	
+	public OrderFunction getOrderFunction(){
+		return orderFunction;
+	}
+	
 	public void setShiftFunction(ShiftFunction function){
 		this.shiftFunction = function;
+	}
+	
+	public ShiftFunction getShiftFunction(){
+		return shiftFunction;
 	}
 	
 	@Override
