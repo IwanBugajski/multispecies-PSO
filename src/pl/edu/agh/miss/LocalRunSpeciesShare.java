@@ -12,7 +12,7 @@ import net.sourceforge.jswarm_pso.FitnessFunction;
 import net.sourceforge.jswarm_pso.Neighborhood;
 import net.sourceforge.jswarm_pso.Neighborhood1D;
 import pl.edu.agh.miss.dao.SimulationResultDAO;
-import pl.edu.agh.miss.fitness.Ackley;
+import pl.edu.agh.miss.fitness.Rastrigin;
 import pl.edu.agh.miss.output.SimulationOutput;
 import pl.edu.agh.miss.output.SimulationOutputError;
 import pl.edu.agh.miss.output.SimulationOutputOk;
@@ -28,9 +28,9 @@ public class LocalRunSpeciesShare {
 	private final static int NUMBER_OF_SPECIES = SpeciesType.values().length;
 
 	public static void main(String[] args) throws InstantiationException, IllegalAccessException, IOException, InterruptedException {
-		FitnessFunction fitnessFunction = new Ackley();
+		FitnessFunction fitnessFunction = new Rastrigin();
 		NUMBER_OF_DIMENSIONS = 100;
-		NUMBER_OF_ITERATIONS = 10000;
+		NUMBER_OF_ITERATIONS = 5000;
 		int executions = 30;
 		
 		className = fitnessFunction.getClass().getName();
@@ -138,7 +138,6 @@ public class LocalRunSpeciesShare {
 		multiSwarm.setMaxPosition(20);
 		multiSwarm.setMinPosition(-20);
 		
-//		multiSwarm.setVelocityFunction(new LinearVelocityFunction(0.1, 2.5).setUpdatesCnt(100).setUpdatesInterval(20));
 		multiSwarm.setAbsMaxVelocity(2.0);
 		
 		multiSwarm.init();
@@ -172,6 +171,9 @@ public class LocalRunSpeciesShare {
 		output.species6 = particles[5];
 		output.species7 = particles[6];
 		output.species8 = particles[7];
+		
+		output.orderFunction = multiSwarm.getOrderFunction().getClass().getSimpleName();
+		output.shiftFunction = multiSwarm.getShiftFunction().getClass().getSimpleName();
 		
 		return output;
 	}

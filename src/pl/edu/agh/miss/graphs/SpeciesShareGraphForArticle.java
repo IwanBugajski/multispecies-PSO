@@ -19,9 +19,10 @@ import pl.edu.agh.miss.output.SimulationResult;
 import pl.edu.agh.miss.particle.species.SpeciesType;
 
 public class SpeciesShareGraphForArticle {
+	private static final String PACKAGE = "pl.edu.agh.miss.fitness";
 	private static final String fitnessFunction = "Rastrigin";
 	private final static int dimensions = 100;
-	private final static int iterations = 3000000;
+	private final static int iterations = 5000;
 	private final static int totalParticles = 25;
 	private final static int NUMBER_OF_SPECIES = SpeciesType.values().length;
 	
@@ -38,7 +39,7 @@ public class SpeciesShareGraphForArticle {
 	private static void getPartialsForSpecies(int speciesId) throws IOException{
 		System.out.println("Getting results");
 		SimulationResultDAO dao = SimulationResultDAO.getInstance();
-		List<SimulationResult> results = dao.getResults(fitnessFunction, dimensions, iterations, totalParticles);
+		List<SimulationResult> results = dao.getResults(PACKAGE + "." + fitnessFunction, dimensions, iterations, totalParticles);
 		dao.close();
 		System.out.println("Results loaded");
 		
@@ -97,7 +98,7 @@ public class SpeciesShareGraphForArticle {
 			chart.addSeries(label, points);
 		}
 
-		String path = "partial/article/" + fitnessFunction;
+		String path = "thesis/share/" + fitnessFunction;
 		String suffix = "" + speciesId + "_" + totalParticles + "_" + dimensions + "_" + iterations + "_" + minExecutions;
 		
 		chart.saveWithDateStamp(path + "/chart_" + suffix);

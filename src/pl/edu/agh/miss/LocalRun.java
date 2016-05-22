@@ -11,6 +11,7 @@ import java.util.List;
 import net.sourceforge.jswarm_pso.FitnessFunction;
 import net.sourceforge.jswarm_pso.Neighborhood;
 import net.sourceforge.jswarm_pso.Neighborhood1D;
+import pl.edu.agh.miss.dao.SimulationResultDAO;
 import pl.edu.agh.miss.fitness.Rastrigin;
 import pl.edu.agh.miss.output.SimulationOutput;
 import pl.edu.agh.miss.output.SimulationOutputError;
@@ -19,6 +20,9 @@ import pl.edu.agh.miss.output.SimulationResult;
 import pl.edu.agh.miss.particle.species.SpeciesType;
 import pl.edu.agh.miss.swarm.MultiSwarm;
 import pl.edu.agh.miss.swarm.SwarmInformation;
+import pl.edu.agh.miss.transition.order.RandomOrder;
+import pl.edu.agh.miss.transition.shift.BestLocalShift;
+import pl.edu.agh.miss.transition.shift.RandomShift;
 
 /**
  * 
@@ -37,25 +41,28 @@ public class LocalRun {
 	public static void main(String[] args) throws InstantiationException, IllegalAccessException, IOException, InterruptedException {
 		FitnessFunction fitnessFunction = new Rastrigin();
 		NUMBER_OF_DIMENSIONS = 100;
-		NUMBER_OF_ITERATIONS = 100000;
+		NUMBER_OF_ITERATIONS = 5000;
 		int executions = 30;
 		
 		className = fitnessFunction.getClass().getName();
 		
 		threads = new ArrayList<Thread>();
 		
-		runParallel(0, fitnessFunction, new int[]{0,4,3,4,3,4,3,4}, executions);
 		runParallel(4, fitnessFunction, new int[]{4,3,3,3,3,3,3,3}, executions);
-		runParallel(11, fitnessFunction, new int[]{11,2,2,2,2,2,2,2}, executions);
-		runParallel(18, fitnessFunction, new int[]{18,1,1,1,1,1,1,1}, executions);
-		runParallel(25, fitnessFunction, new int[]{25,0,0,0,0,0,0,0}, executions);
 		
-//		runParallel(1, fitnessFunction, new int[]{3,3,3,3,3,3,3,3}, executions);
-//		runParallel(2, fitnessFunction, new int[]{3,3,3,3,3,3,3,3}, executions);
-//		runParallel(3, fitnessFunction, new int[]{3,3,3,3,3,3,3,3}, executions);
-//		runParallel(4, fitnessFunction, new int[]{3,3,3,3,3,3,3,3}, executions);
+//		runParallel(0, fitnessFunction, new int[]{0,4,3,4,3,4,3,4}, executions);
+//		runParallel(4, fitnessFunction, new int[]{4,3,3,3,3,3,3,3}, executions);
+//		runParallel(11, fitnessFunction, new int[]{11,2,2,2,2,2,2,2}, executions);
+//		runParallel(18, fitnessFunction, new int[]{18,1,1,1,1,1,1,1}, executions);
+//		runParallel(25, fitnessFunction, new int[]{25,0,0,0,0,0,0,0}, executions);
 		
-//		runParallel(0, fitnessFunction, new int[]{3,3,3,3,3,3,3,3}, executions);
+//		runParallel(0, fitnessFunction, new int[]{4,3,3,3,3,3,3,3}, executions);
+//		runParallel(1, fitnessFunction, new int[]{5,10,5,5,0,0,0,0}, executions);
+//		runParallel(2, fitnessFunction, new int[]{0,0,0,0,7,7,7,4}, executions);
+//		runParallel(3, fitnessFunction, new int[]{6,0,0,0,5,5,5,4}, executions);
+//		runParallel(4, fitnessFunction, new int[]{3,6,4,2,2,2,2,4}, executions);
+		
+//		runParallel(0, fitnessFunction, new int[]{4,3,3,3,3,3,3,3}, executions);
 //		runParallel(1, fitnessFunction, new int[]{5,10,5,5,0,0,0,0}, executions);
 //		runParallel(2, fitnessFunction, new int[]{0,0,0,0,7,7,7,4}, executions);
 //		runParallel(3, fitnessFunction, new int[]{6,0,0,0,5,5,5,4}, executions);
@@ -100,8 +107,8 @@ public class LocalRun {
 			
 			output = new SimulationOutputOk();
 			((SimulationOutputOk) output).results = result;
-//			SimulationResultDAO.getInstance().writeResult(result);
-//			SimulationResultDAO.getInstance().close();
+			SimulationResultDAO.getInstance().writeResult(result);
+			SimulationResultDAO.getInstance().close();
 			System.out.println(result.bestFitness);
 		} catch (Throwable e){
 			e.printStackTrace();
@@ -145,8 +152,8 @@ public class LocalRun {
 		multiSwarm.setMinPosition(-20);
 		
 //		multiSwarm.setVelocityFunction(new LinearVelocityFunction(0.1, 2.5).setUpdatesCnt(100).setUpdatesInterval(20));
-//		multiSwarm.setOrderFunction(new BestWorstLocalOrder().setUpdatesInterval(500));
-//		multiSwarm.setShiftFunction(new BestLocalShift().setUpdatesInterval(500));
+		multiSwarm.setOrderFunction(new RandomOrder().setUpdatesInterval(1000));
+		multiSwarm.setShiftFunction(new RandomShift().setUpdatesInterval(1000));
 
 		multiSwarm.setAbsMaxVelocity(2.0);
 		multiSwarm.init();

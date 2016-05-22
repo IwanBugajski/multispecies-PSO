@@ -14,7 +14,7 @@ import pl.edu.agh.miss.swarm.SwarmInformation;
 public abstract class ShiftFunction {
 	protected int updatesInterval = 100;
 	private int shiftCnt = SpeciesType.values().length / 2;
-	private int shiftRange = 1;
+	private int shiftRange = 2;
 
 	protected abstract Particle selectParticle(SwarmInformation swarmInfo);
 	
@@ -27,7 +27,7 @@ public abstract class ShiftFunction {
 		
 		for(SwarmInformation swarmInfo : swarmInformations){
 			sortingMap.put(swarmInfo.getType(), swarmInfo);
-			if(swarmInfo.getNumberOfParticles() >= 0){
+			if(swarmInfo.getNumberOfParticles() > 0){
 				notEmpty.add(swarmInfo);
 			}
 		}
@@ -43,6 +43,10 @@ public abstract class ShiftFunction {
 			//select random source swarm info
 			int fromIndex = random.nextInt(notEmpty.size());
 			SwarmInformation from = notEmpty.get(fromIndex);
+			
+			if(from.getParticles().size() == 0){
+				System.out.println(from);
+			}
 			
 			//select random destination swarm info - a better one than source
 			int toIndex = Math.max(0, sorted.indexOf(from) - 1 - random.nextInt(shiftRange));
@@ -72,11 +76,12 @@ public abstract class ShiftFunction {
 	}
 	
 	protected void doShift(Particle particle, SwarmInformation from, SwarmInformation to){
+		System.out.println("\tShift: " + from.getType() + " -> " + to.getType());
+
 		((SpeciesParticle) particle).setType(to.getType());
 		from.removeParticle(particle);
 		to.addParticle(particle);
 		
-		System.out.println("\tShift: " + from.getType() + " -> " + to.getType());
 	}
 
 	public int getShiftCnt() {
