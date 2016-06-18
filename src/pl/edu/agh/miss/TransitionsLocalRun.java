@@ -12,7 +12,7 @@ import net.sourceforge.jswarm_pso.FitnessFunction;
 import net.sourceforge.jswarm_pso.Neighborhood;
 import net.sourceforge.jswarm_pso.Neighborhood1D;
 import pl.edu.agh.miss.dao.SimulationResultDAO;
-import pl.edu.agh.miss.fitness.Griewank;
+import pl.edu.agh.miss.fitness.Rastrigin;
 import pl.edu.agh.miss.output.SimulationOutput;
 import pl.edu.agh.miss.output.SimulationOutputError;
 import pl.edu.agh.miss.output.SimulationOutputOk;
@@ -20,57 +20,84 @@ import pl.edu.agh.miss.output.SimulationResult;
 import pl.edu.agh.miss.particle.species.SpeciesType;
 import pl.edu.agh.miss.swarm.MultiSwarm;
 import pl.edu.agh.miss.swarm.SwarmInformation;
+import pl.edu.agh.miss.transition.order.BestAvgLocalOrder;
+import pl.edu.agh.miss.transition.order.BestLocalOrder;
+import pl.edu.agh.miss.transition.order.BestWorstLocalOrder;
 import pl.edu.agh.miss.transition.order.DefaultOrderFunction;
+import pl.edu.agh.miss.transition.order.NumberOrder;
+import pl.edu.agh.miss.transition.order.OrderFunction;
+import pl.edu.agh.miss.transition.order.RandomOrder;
+import pl.edu.agh.miss.transition.shift.BestLocalShift;
 import pl.edu.agh.miss.transition.shift.DefaultShiftFunction;
+import pl.edu.agh.miss.transition.shift.RandomShift;
+import pl.edu.agh.miss.transition.shift.ShiftFunction;
+import pl.edu.agh.miss.transition.shift.WorstLocalShift;
 
-public class LocalRunSpeciesShare {
+/**
+ * 
+ * @author iwanb
+ * command line args:
+ * - function name - must be the same as class from pl.edu.agh.miss.fitness
+ * - number of dimensions
+ * - number of iterations
+ * - species id
+ * - proportional share of given species
+ */
+public class TransitionsLocalRun {
+	private static OrderFunction orderFunction = new BestLocalOrder(); 
+	private static ShiftFunction shiftFunction = new RandomShift();
+	
+	@SuppressWarnings("rawtypes")
+	private static final Class [] orderFunctions = new Class [] {
+		DefaultOrderFunction.class, BestAvgLocalOrder.class, BestLocalOrder.class, BestWorstLocalOrder.class, NumberOrder.class, RandomOrder.class
+	};
+	@SuppressWarnings("rawtypes")
+	private static final Class [] shiftFunctions = new Class [] {
+		DefaultShiftFunction.class, BestLocalShift.class, RandomShift.class, WorstLocalShift.class
+	};
+	
 	private static String className;
 	private static List<Thread> threads;
-	private final static int [] speciesShares = new int [] {0, 4, 11, 18, 25};
-	private final static int NUMBER_OF_SPECIES = SpeciesType.values().length;
 
+	@SuppressWarnings("rawtypes")
 	public static void main(String[] args) throws InstantiationException, IllegalAccessException, IOException, InterruptedException {
-		FitnessFunction fitnessFunction = new Griewank();
+		FitnessFunction fitnessFunction = new Rastrigin();
 		NUMBER_OF_DIMENSIONS = 100;
-		NUMBER_OF_ITERATIONS = 3000;
+		NUMBER_OF_ITERATIONS = 5000;
 		int executions = 30;
 		
 		className = fitnessFunction.getClass().getName();
 		
-		threads = new ArrayList<Thread>();
-		
-		for(int species = 1; species <= NUMBER_OF_SPECIES; species++){
-			runParallel(fitnessFunction, species, executions);
-		}
-		
-		for(Thread thread : threads){
-			thread.join();
+		for(Class orderFunctionClass : orderFunctions){
+			for(Class shiftFunctionClass : shiftFunctions){
+				orderFunction = (OrderFunction) orderFunctionClass.newInstance();
+				shiftFunction = (ShiftFunction) shiftFunctionClass.newInstance();
+				
+				System.out.println(orderFunction);
+				System.out.println(shiftFunction);
+				
+				threads = new ArrayList<Thread>();
+				
+				runParallel(0, fitnessFunction, new int[]{4,3,3,3,3,3,3,3}, executions/3);
+				runParallel(1, fitnessFunction, new int[]{4,3,3,3,3,3,3,3}, executions/3);
+				runParallel(2, fitnessFunction, new int[]{4,3,3,3,3,3,3,3}, executions/3);
+				
+				for(Thread thread : threads){
+					thread.join();
+				}
+			}
 		}
 	}
 
-	private static void runParallel(final FitnessFunction fitnessFunction, final int speciesId, final int executions){
+	private static void runParallel(final int id, final FitnessFunction fitnessFunction, final int[] speciesArray, final int executions){
 		Thread thread = new Thread(new Runnable() {
 			
 			public void run() {
-				for(int share : speciesShares){
-					System.out.println("Species " + speciesId + " share " + share);
-					
-					int [] speciesArray = new int[NUMBER_OF_SPECIES];
-					
-					for(int i = 0; i < NUMBER_OF_SPECIES; i++){
-						if(i == speciesId - 1){
-							speciesArray[i] = share;
-						} else {
-							speciesArray[i] = (NUMBER_OF_PARTICLES - share) / (NUMBER_OF_SPECIES - 1); 
-						}
-					}
-					
-					for(int i = 0; i < executions; i++){
-						try {
-							simulate(fitnessFunction, speciesArray, speciesId, executions, i);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+				for(int i = 0; i < executions; i++){
+					try {
+						simulate(fitnessFunction, speciesArray, id, executions, i);
+					} catch (Throwable e) {
+						e.printStackTrace();
 					}
 				}
 			}
@@ -117,14 +144,13 @@ public class LocalRunSpeciesShare {
 		List<SwarmInformation> swarmInformations = new ArrayList<SwarmInformation>();
 		
 		for(int i = 0; i < particles.length; i++){
-			if(particles[i] != 0){
+//			if(particles[i] != 0){
 				cnt += particles[i];
 				
 				SpeciesType type = SpeciesType.values()[i];
 				SwarmInformation swarmInformation = new SwarmInformation(particles[i], type);
-				
 				swarmInformations.add(swarmInformation);
-			}
+//			}
 		}
 		
 		SwarmInformation [] swarmInformationsArray = new SwarmInformation [swarmInformations.size()]; 
@@ -141,10 +167,10 @@ public class LocalRunSpeciesShare {
 		multiSwarm.setMaxPosition(20);
 		multiSwarm.setMinPosition(-20);
 		
-		multiSwarm.setOrderFunction(new DefaultOrderFunction());
-		multiSwarm.setShiftFunction(new DefaultShiftFunction());
-//		multiSwarm.setAbsMaxVelocity(2.0);
+		multiSwarm.setOrderFunction(orderFunction);
+		multiSwarm.setShiftFunction(shiftFunction);
 		
+//		multiSwarm.setAbsMaxVelocity(2.0);
 		multiSwarm.init();
 		
 		List<Double> partial = new ArrayList<Double>(NUMBER_OF_ITERATIONS / 100);

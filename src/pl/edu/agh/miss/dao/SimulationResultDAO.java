@@ -22,15 +22,9 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 
 public class SimulationResultDAO {
-//    private static final String COLLECTION_NAME = "bestVelocity";
-//    private static final String COLLECTION_NAME = "combinationsSmall";
-//	private static final String COLLECTION_NAME = "simulation_results";
-//	private static final String COLLECTION_NAME = "speciesShareLocal";
-//	private static final String COLLECTION_NAME = "combinationLocal";
-	
-//	private static final String COLLECTION_NAME = "transitionsLocal";
-
-	private static final String COLLECTION_NAME = "speciesShareLocalVelM2";
+//	private static final String COLLECTION_NAME = "speciesShareFinal";
+//	private static final String COLLECTION_NAME = "combinationsFinal";
+	private static final String COLLECTION_NAME = "transitionsFinal";
 	
 	private static final String DB_PROPERTIES_FILE = "db.properties";
 
@@ -90,6 +84,9 @@ public class SimulationResultDAO {
     		result.species7 = next.getInteger("species7");
     		result.species8 = next.getInteger("species8");
     		result.bestFitness = next.getDouble("bestFitness");
+    		
+    		result.orderFunction = next.getString("orderFunction");
+    		result.shiftFunction = next.getString("shiftFunction");
     		
     		//TODO - best velocity
     		

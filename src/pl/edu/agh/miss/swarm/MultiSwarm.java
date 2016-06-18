@@ -7,19 +7,16 @@ import net.sourceforge.jswarm_pso.Swarm;
 import net.sourceforge.jswarm_pso.VariablesUpdate;
 import pl.edu.agh.miss.particle.MyParticle;
 import pl.edu.agh.miss.particle.species.SpeciesParticle;
-import pl.edu.agh.miss.transition.order.DefaultOrderFunction;
 import pl.edu.agh.miss.transition.order.OrderFunction;
-import pl.edu.agh.miss.transition.shift.DefaultShiftFunction;
 import pl.edu.agh.miss.transition.shift.ShiftFunction;
-import pl.edu.agh.miss.velocity.ConstantVelocityFunction;
 import pl.edu.agh.miss.velocity.VelocityFunction;
 
 public class MultiSwarm extends Swarm {
 	
 	private SwarmInformation swarmInfos[];
-	private VelocityFunction velocityFunction = new ConstantVelocityFunction(2.0);
-	private OrderFunction orderFunction = new DefaultOrderFunction();
-	private ShiftFunction shiftFunction = new DefaultShiftFunction();
+	private VelocityFunction velocityFunction;
+	private OrderFunction orderFunction;
+	private ShiftFunction shiftFunction;
 	private long evolveCnt = 0L;
 	
 	
@@ -98,7 +95,20 @@ public class MultiSwarm extends Swarm {
 		if (maxPosition == null) throw new RuntimeException("maxPosition array is null!");
 		if (minPosition == null) throw new RuntimeException("maxPosition array is null!");
 
-		setAbsMaxVelocity(velocityFunction.getInitialVelocity());
+		if (maxVelocity == null) {
+			// Default maxVelocity[]
+			int dim = sampleParticle.getDimension();
+			maxVelocity = new double[dim];
+			for (int i = 0; i < dim; i++)
+				maxVelocity[i] = (maxPosition[i] - minPosition[i]) / 2.0;
+		}
+		if (minVelocity == null) {
+			// Default minVelocity[]
+			int dim = sampleParticle.getDimension();
+			minVelocity = new double[dim];
+			for (int i = 0; i < dim; i++)
+				minVelocity[i] = -maxVelocity[i];
+		}
 		
 		// Init each particle
 		int particleOffset = 0;

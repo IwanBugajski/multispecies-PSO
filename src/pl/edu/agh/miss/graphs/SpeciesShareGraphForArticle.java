@@ -20,9 +20,9 @@ import pl.edu.agh.miss.particle.species.SpeciesType;
 
 public class SpeciesShareGraphForArticle {
 	private static final String PACKAGE = "pl.edu.agh.miss.fitness";
-	private static final String fitnessFunction = "Rastrigin";
+	private static final String fitnessFunction = "Ackley";
 	private final static int dimensions = 100;
-	private final static int iterations = 5000;
+	private final static int iterations = 3000;
 	private final static int totalParticles = 25;
 	private final static int NUMBER_OF_SPECIES = SpeciesType.values().length;
 	

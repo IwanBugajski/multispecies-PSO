@@ -17,19 +17,26 @@ import pl.edu.agh.miss.dao.SimulationResultDAO;
 import pl.edu.agh.miss.output.SimulationResult;
 
 public class DiferentConfigurations {
-    private static final String FITNESS_FUNCTION = "Ackley";
+    private static final String FITNESS_FUNCTION = "Schwefel";
     private static final String PACKAGE = "pl.edu.agh.miss.fitness";
     private final static int DIMENSIONS = 100;
-    private final static int ITERATIONS = 3000000;
+    private final static int ITERATIONS = 5000;
     private final static int TOTAL_PARTICLES = 25;
 
     private final static int[][] SPAWN_CONFIGURATIONS = {
     	{25,0,0,0,0,0,0,0},
-        {5, 10, 5, 0, 0, 0, 0, 5},
-        {5, 10, 5, 5, 0, 0, 0, 0},
-        {0, 0, 0, 0, 7, 7, 7, 4},
-        {6, 0, 0, 0, 5, 5, 5, 4},
-        {3, 6, 4, 2, 2, 2, 2, 4},
+//        {5, 10, 5, 0, 0, 0, 0, 5},
+//        {5, 10, 5, 5, 0, 0, 0, 0},
+//        {0, 0, 0, 0, 7, 7, 7, 4},
+//        {6, 0, 0, 0, 5, 5, 5, 4},
+//        {3, 6, 4, 2, 2, 2, 2, 4},
+        
+        {0,10,5,5,0,0,0,5},
+        {4,7,7,7,0,0,0,0},
+        {6,5,5,5,0,0,0,4},
+        {0,7,7,7,0,0,0,4},
+        {0,6,6,6,1,1,1,4}
+        
     };
     private static final int COUNT_OF_PARTIALS = 100;
 
@@ -57,7 +64,7 @@ public class DiferentConfigurations {
 
         System.out.println("Preparing chart data");
         
-        String path = "partial/configurations/" + fitnessFunction;
+        String path = "thesis/configurations/" + fitnessFunction;
         String suffix = "" + dimensions + "_" + iterations;
 
         Chart<List<Point>> chart =

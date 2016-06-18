@@ -52,6 +52,10 @@ public abstract class ShiftFunction {
 			int toIndex = Math.max(0, sorted.indexOf(from) - 1 - random.nextInt(shiftRange));
 			SwarmInformation to = sorted.get(toIndex);
 			
+			if(to == null){
+				return;
+			}
+			
 			//perform shift
 			doShift(selectParticle(from), from, to);
 			

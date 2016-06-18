@@ -12,7 +12,7 @@ import net.sourceforge.jswarm_pso.FitnessFunction;
 import net.sourceforge.jswarm_pso.Neighborhood;
 import net.sourceforge.jswarm_pso.Neighborhood1D;
 import pl.edu.agh.miss.dao.SimulationResultDAO;
-import pl.edu.agh.miss.fitness.Rastrigin;
+import pl.edu.agh.miss.fitness.Schwefel;
 import pl.edu.agh.miss.output.SimulationOutput;
 import pl.edu.agh.miss.output.SimulationOutputError;
 import pl.edu.agh.miss.output.SimulationOutputOk;
@@ -20,9 +20,8 @@ import pl.edu.agh.miss.output.SimulationResult;
 import pl.edu.agh.miss.particle.species.SpeciesType;
 import pl.edu.agh.miss.swarm.MultiSwarm;
 import pl.edu.agh.miss.swarm.SwarmInformation;
-import pl.edu.agh.miss.transition.order.RandomOrder;
-import pl.edu.agh.miss.transition.shift.BestLocalShift;
-import pl.edu.agh.miss.transition.shift.RandomShift;
+import pl.edu.agh.miss.transition.order.DefaultOrderFunction;
+import pl.edu.agh.miss.transition.shift.DefaultShiftFunction;
 
 /**
  * 
@@ -39,7 +38,7 @@ public class LocalRun {
 	private static List<Thread> threads;
 
 	public static void main(String[] args) throws InstantiationException, IllegalAccessException, IOException, InterruptedException {
-		FitnessFunction fitnessFunction = new Rastrigin();
+		FitnessFunction fitnessFunction = new Schwefel();
 		NUMBER_OF_DIMENSIONS = 100;
 		NUMBER_OF_ITERATIONS = 5000;
 		int executions = 30;
@@ -47,8 +46,6 @@ public class LocalRun {
 		className = fitnessFunction.getClass().getName();
 		
 		threads = new ArrayList<Thread>();
-		
-		runParallel(4, fitnessFunction, new int[]{4,3,3,3,3,3,3,3}, executions);
 		
 //		runParallel(0, fitnessFunction, new int[]{0,4,3,4,3,4,3,4}, executions);
 //		runParallel(4, fitnessFunction, new int[]{4,3,3,3,3,3,3,3}, executions);
@@ -62,11 +59,17 @@ public class LocalRun {
 //		runParallel(3, fitnessFunction, new int[]{6,0,0,0,5,5,5,4}, executions);
 //		runParallel(4, fitnessFunction, new int[]{3,6,4,2,2,2,2,4}, executions);
 		
-//		runParallel(0, fitnessFunction, new int[]{4,3,3,3,3,3,3,3}, executions);
-//		runParallel(1, fitnessFunction, new int[]{5,10,5,5,0,0,0,0}, executions);
-//		runParallel(2, fitnessFunction, new int[]{0,0,0,0,7,7,7,4}, executions);
-//		runParallel(3, fitnessFunction, new int[]{6,0,0,0,5,5,5,4}, executions);
-//		runParallel(4, fitnessFunction, new int[]{3,6,4,2,2,2,2,4}, executions);
+		runParallel(0, fitnessFunction, new int[]{25,0,0,0,0,0,0,0}, executions);
+		runParallel(1, fitnessFunction, new int[]{5,10,5,5,0,0,0,0}, executions);
+		runParallel(2, fitnessFunction, new int[]{0,0,0,0,7,7,7,4}, executions);
+		runParallel(3, fitnessFunction, new int[]{6,0,0,0,5,5,5,4}, executions);
+		runParallel(4, fitnessFunction, new int[]{3,6,4,2,2,2,2,4}, executions);
+		
+		runParallel(1, fitnessFunction, new int[]{0,10,5,5,0,0,0,5}, executions);
+		runParallel(2, fitnessFunction, new int[]{4,7,7,7,0,0,0,0}, executions);
+		runParallel(3, fitnessFunction, new int[]{6,5,5,5,0,0,0,4}, executions);
+		runParallel(4, fitnessFunction, new int[]{0,7,7,7,0,0,0,4}, executions);
+		runParallel(5, fitnessFunction, new int[]{0,6,6,6,1,1,1,4}, executions);
 		
 		for(Thread thread : threads){
 			thread.join();
@@ -151,11 +154,10 @@ public class LocalRun {
 		multiSwarm.setMaxPosition(20);
 		multiSwarm.setMinPosition(-20);
 		
-//		multiSwarm.setVelocityFunction(new LinearVelocityFunction(0.1, 2.5).setUpdatesCnt(100).setUpdatesInterval(20));
-		multiSwarm.setOrderFunction(new RandomOrder().setUpdatesInterval(1000));
-		multiSwarm.setShiftFunction(new RandomShift().setUpdatesInterval(1000));
-
-		multiSwarm.setAbsMaxVelocity(2.0);
+		multiSwarm.setOrderFunction(new DefaultOrderFunction());
+		multiSwarm.setShiftFunction(new DefaultShiftFunction());
+		
+//		multiSwarm.setAbsMaxVelocity(2.0);
 		multiSwarm.init();
 		
 		List<Double> partial = new ArrayList<Double>(NUMBER_OF_ITERATIONS / 100);
