@@ -18,25 +18,42 @@ import pl.edu.agh.mpso.output.SimulationResult;
 
 public class DiferentConfigurations {
     private static final String FITNESS_FUNCTION = "Schwefel";
-    private static final String PACKAGE = "pl.edu.agh.miss.fitness";
+    private static final String PACKAGE = "pl.edu.agh.mpso.fitness";
     private final static int DIMENSIONS = 100;
-    private final static int ITERATIONS = 5000;
+    private final static int ITERATIONS = 3000;
     private final static int TOTAL_PARTICLES = 25;
 
     private final static int[][] SPAWN_CONFIGURATIONS = {
     	{25,0,0,0,0,0,0,0},
-//        {5, 10, 5, 0, 0, 0, 0, 5},
-//        {5, 10, 5, 5, 0, 0, 0, 0},
-//        {0, 0, 0, 0, 7, 7, 7, 4},
-//        {6, 0, 0, 0, 5, 5, 5, 4},
-//        {3, 6, 4, 2, 2, 2, 2, 4},
-        
-        {0,10,5,5,0,0,0,5},
-        {4,7,7,7,0,0,0,0},
-        {6,5,5,5,0,0,0,4},
-        {0,7,7,7,0,0,0,4},
-        {0,6,6,6,1,1,1,4}
-        
+//    	{5,10,5,5,0,0,0,0},
+//    	{0,0,0,0,7,7,7,4},
+//    	{6,0,0,0,5,5,5,4},
+//    	{3,6,4,2,2,2,2,4}
+//    	,
+    	{0,10,5,5,0,0,0,5},
+//    	{4,7,7,7,0,0,0,0},
+//    	{6,5,5,5,0,0,0,4},
+//    	{0,7,7,7,0,0,0,4},
+//    	{0,6,6,6,1,1,1,4}
+//    	,
+//    	{0,3,0,4,0,0,0,18},
+//    	{4,1,0,2,0,0,0,18},
+    	{1,4,0,2,0,0,0,18}
+    	,
+    	{1,4,0,5,0,0,0,15},
+//    	{4,0,0,0,2,2,2,15},
+//    	{10,5,0,0,0,0,0,10},
+//    	{5,5,0,5,0,0,0,10}
+//    	,
+//    	{5,5,0,10,0,0,0,5},
+//    	{5,10,0,5,0,0,0,5},
+//    	{5,5,5,0,0,0,0,5},
+    	{0,5,5,5,0,0,0,10},
+//    	{5,5,0,0,2,0,3,5}
+//    	,
+    	{5,7,6,7,0,0,0,0},
+    	{0,6,5,6,1,1,1,5}
+    	
     };
     private static final int COUNT_OF_PARTIALS = 100;
 
@@ -64,7 +81,7 @@ public class DiferentConfigurations {
 
         System.out.println("Preparing chart data");
         
-        String path = "thesis/configurations/" + fitnessFunction;
+        String path = "thesis2/configurations/" + fitnessFunction;
         String suffix = "" + dimensions + "_" + iterations;
 
         Chart<List<Point>> chart =
@@ -85,7 +102,7 @@ public class DiferentConfigurations {
             List<List<Double>> resultsForConfiguration =
                     dividedResultsByConfiguration.get(i);
             
-            for (int j = 0; j < COUNT_OF_PARTIALS; j++) {
+            for (int j = 2; j < COUNT_OF_PARTIALS; j++) {
                 double sum = 0;
 
                 for (List<Double> resultPartialList : resultsForConfiguration) {

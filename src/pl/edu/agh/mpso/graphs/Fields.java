@@ -12,10 +12,10 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import net.sourceforge.jswarm_pso.FitnessFunction;
-import pl.edu.agh.mpso.fitness.Griewank;
+import pl.edu.agh.mpso.fitness.Styblinski;
 
 public class Fields {
-	private final static FitnessFunction fitnessFunction = new Griewank();
+	private final static FitnessFunction fitnessFunction = new Styblinski();
 	private final static int IMAGE_SIZE = 2000;
 	private final static double SEARCH_SPACE_SIZE = 5;
 	private static int [] colors = null;

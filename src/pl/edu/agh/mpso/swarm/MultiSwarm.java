@@ -1,11 +1,14 @@
 package pl.edu.agh.mpso.swarm;
 
+import java.util.Arrays;
+
 import net.sourceforge.jswarm_pso.FitnessFunction;
 import net.sourceforge.jswarm_pso.Particle;
 import net.sourceforge.jswarm_pso.ParticleUpdate;
 import net.sourceforge.jswarm_pso.Swarm;
 import net.sourceforge.jswarm_pso.VariablesUpdate;
 import pl.edu.agh.mpso.species.SpeciesParticle;
+import pl.edu.agh.mpso.species.SpeciesType;
 import pl.edu.agh.mpso.transition.order.OrderFunction;
 import pl.edu.agh.mpso.transition.shift.ShiftFunction;
 import pl.edu.agh.mpso.velocity.VelocityFunction;
@@ -168,6 +171,16 @@ public class MultiSwarm extends Swarm {
 		if(shiftFunction != null && orderFunction != null && evolveCnt % shiftFunction.getUpdatesInterval() == 0){
 			shiftFunction.shift(swarmInfos, orderFunction.getOrder());
 		}
+	}
+	
+	public int [] getSpecies(){
+		int [] result = new int[SpeciesType.values().length];
+		for(int i = 0 ; i < swarmInfos.length; i++){
+			SpeciesType type = SpeciesType.values()[i];
+			int index = Arrays.asList(SpeciesType.values()).indexOf(type);
+			result[index] = swarmInfos[i].getNumberOfParticles();
+		}
+		return result;
 	}
 
 }

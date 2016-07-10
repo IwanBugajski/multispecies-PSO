@@ -12,7 +12,7 @@ import net.sourceforge.jswarm_pso.FitnessFunction;
 import net.sourceforge.jswarm_pso.Neighborhood;
 import net.sourceforge.jswarm_pso.Neighborhood1D;
 import pl.edu.agh.mpso.dao.SimulationResultDAO;
-import pl.edu.agh.mpso.fitness.Rastrigin;
+import pl.edu.agh.mpso.fitness.Styblinski;
 import pl.edu.agh.mpso.output.SimulationOutput;
 import pl.edu.agh.mpso.output.SimulationOutputError;
 import pl.edu.agh.mpso.output.SimulationOutputOk;
@@ -61,7 +61,7 @@ public class TransitionsLocalRun {
 
 	@SuppressWarnings("rawtypes")
 	public static void main(String[] args) throws InstantiationException, IllegalAccessException, IOException, InterruptedException {
-		FitnessFunction fitnessFunction = new Rastrigin();
+		FitnessFunction fitnessFunction = new Styblinski();
 		NUMBER_OF_DIMENSIONS = 100;
 		NUMBER_OF_ITERATIONS = 5000;
 		int executions = 30;

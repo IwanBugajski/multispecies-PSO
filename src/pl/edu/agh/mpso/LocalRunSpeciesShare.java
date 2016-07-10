@@ -12,7 +12,7 @@ import net.sourceforge.jswarm_pso.FitnessFunction;
 import net.sourceforge.jswarm_pso.Neighborhood;
 import net.sourceforge.jswarm_pso.Neighborhood1D;
 import pl.edu.agh.mpso.dao.SimulationResultDAO;
-import pl.edu.agh.mpso.fitness.Griewank;
+import pl.edu.agh.mpso.fitness.Styblinski;
 import pl.edu.agh.mpso.output.SimulationOutput;
 import pl.edu.agh.mpso.output.SimulationOutputError;
 import pl.edu.agh.mpso.output.SimulationOutputOk;
@@ -30,7 +30,7 @@ public class LocalRunSpeciesShare {
 	private final static int NUMBER_OF_SPECIES = SpeciesType.values().length;
 
 	public static void main(String[] args) throws InstantiationException, IllegalAccessException, IOException, InterruptedException {
-		FitnessFunction fitnessFunction = new Griewank();
+		FitnessFunction fitnessFunction = new Styblinski();
 		NUMBER_OF_DIMENSIONS = 100;
 		NUMBER_OF_ITERATIONS = 3000;
 		int executions = 30;
@@ -113,12 +113,12 @@ public class LocalRunSpeciesShare {
 	
 
 	private static SimulationResult run(int [] particles, FitnessFunction fitnessFunction) {
-		int cnt = 0;
+//		int cnt = 0;
 		List<SwarmInformation> swarmInformations = new ArrayList<SwarmInformation>();
 		
 		for(int i = 0; i < particles.length; i++){
 			if(particles[i] != 0){
-				cnt += particles[i];
+//				cnt += particles[i];
 				
 				SpeciesType type = SpeciesType.values()[i];
 				SwarmInformation swarmInformation = new SwarmInformation(particles[i], type);
@@ -130,7 +130,7 @@ public class LocalRunSpeciesShare {
 		SwarmInformation [] swarmInformationsArray = new SwarmInformation [swarmInformations.size()]; 
 		MultiSwarm multiSwarm = new MultiSwarm(swarmInformations.toArray(swarmInformationsArray), fitnessFunction);
 		
-		Neighborhood neighbourhood = new Neighborhood1D(cnt / 5, true);
+		Neighborhood neighbourhood = new Neighborhood1D(7, true);
 		multiSwarm.setNeighborhood(neighbourhood);
 		
 		multiSwarm.setInertia(0.95);

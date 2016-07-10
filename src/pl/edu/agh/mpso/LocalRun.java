@@ -34,42 +34,27 @@ import pl.edu.agh.mpso.transition.shift.DefaultShiftFunction;
  * - proportional share of given species
  */
 public class LocalRun {
+	private static final int _7 = 7;
 	private static String className;
 	private static List<Thread> threads;
 
 	public static void main(String[] args) throws InstantiationException, IllegalAccessException, IOException, InterruptedException {
 		FitnessFunction fitnessFunction = new Schwefel();
 		NUMBER_OF_DIMENSIONS = 100;
-		NUMBER_OF_ITERATIONS = 5000;
+		NUMBER_OF_ITERATIONS = 3000;
 		int executions = 30;
 		
 		className = fitnessFunction.getClass().getName();
 		
 		threads = new ArrayList<Thread>();
 		
-//		runParallel(0, fitnessFunction, new int[]{0,4,3,4,3,4,3,4}, executions);
-//		runParallel(4, fitnessFunction, new int[]{4,3,3,3,3,3,3,3}, executions);
-//		runParallel(11, fitnessFunction, new int[]{11,2,2,2,2,2,2,2}, executions);
-//		runParallel(18, fitnessFunction, new int[]{18,1,1,1,1,1,1,1}, executions);
-//		runParallel(25, fitnessFunction, new int[]{25,0,0,0,0,0,0,0}, executions);
-		
-//		runParallel(0, fitnessFunction, new int[]{4,3,3,3,3,3,3,3}, executions);
-//		runParallel(1, fitnessFunction, new int[]{5,10,5,5,0,0,0,0}, executions);
-//		runParallel(2, fitnessFunction, new int[]{0,0,0,0,7,7,7,4}, executions);
-//		runParallel(3, fitnessFunction, new int[]{6,0,0,0,5,5,5,4}, executions);
-//		runParallel(4, fitnessFunction, new int[]{3,6,4,2,2,2,2,4}, executions);
-		
-		runParallel(0, fitnessFunction, new int[]{25,0,0,0,0,0,0,0}, executions);
-		runParallel(1, fitnessFunction, new int[]{5,10,5,5,0,0,0,0}, executions);
-		runParallel(2, fitnessFunction, new int[]{0,0,0,0,7,7,7,4}, executions);
-		runParallel(3, fitnessFunction, new int[]{6,0,0,0,5,5,5,4}, executions);
-		runParallel(4, fitnessFunction, new int[]{3,6,4,2,2,2,2,4}, executions);
-		
-		runParallel(1, fitnessFunction, new int[]{0,10,5,5,0,0,0,5}, executions);
-		runParallel(2, fitnessFunction, new int[]{4,7,7,7,0,0,0,0}, executions);
-		runParallel(3, fitnessFunction, new int[]{6,5,5,5,0,0,0,4}, executions);
-		runParallel(4, fitnessFunction, new int[]{0,7,7,7,0,0,0,4}, executions);
-		runParallel(5, fitnessFunction, new int[]{0,6,6,6,1,1,1,4}, executions);
+//		runParallel(0, fitnessFunction, new int[]{25,0,0,0,0,0,0,0}, executions);
+//		runParallel(0, fitnessFunction, new int[]{0,10,5,5,0,0,0,5}, executions);
+//		runParallel(0, fitnessFunction, new int[]{1,4,0,2,0,0,0,18}, executions);
+//		runParallel(0, fitnessFunction, new int[]{0,5,5,5,0,0,0,10}, executions);
+		runParallel(0, fitnessFunction, new int[]{1,4,0,5,0,0,0,15}, executions);
+//		runParallel(0, fitnessFunction, new int[]{5,7,6,7,0,0,0,0}, executions);
+//		runParallel(0, fitnessFunction, new int[]{0,6,5,6,1,1,1,5}, executions);
 		
 		for(Thread thread : threads){
 			thread.join();
@@ -143,7 +128,7 @@ public class LocalRun {
 		SwarmInformation [] swarmInformationsArray = new SwarmInformation [swarmInformations.size()]; 
 		MultiSwarm multiSwarm = new MultiSwarm(swarmInformations.toArray(swarmInformationsArray), fitnessFunction);
 		
-		Neighborhood neighbourhood = new Neighborhood1D(cnt / 5, true);
+		Neighborhood neighbourhood = new Neighborhood1D(_7, true);
 		multiSwarm.setNeighborhood(neighbourhood);
 		
 		multiSwarm.setInertia(0.95);

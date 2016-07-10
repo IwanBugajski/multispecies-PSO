@@ -23,8 +23,9 @@ import com.mongodb.client.MongoDatabase;
 
 public class SimulationResultDAO {
 //	private static final String COLLECTION_NAME = "speciesShareFinal";
-//	private static final String COLLECTION_NAME = "combinationsFinal";
-	private static final String COLLECTION_NAME = "transitionsFinal";
+//	private static final String COLLECTION_NAME = "speciesShareSN7";
+	private static final String COLLECTION_NAME = "combinationsN7";
+//	private static final String COLLECTION_NAME = "transitionsFinal";
 	
 	private static final String DB_PROPERTIES_FILE = "db.properties";
 

@@ -14,8 +14,8 @@ import pl.edu.agh.mpso.dao.SimulationResultDAO;
 import pl.edu.agh.mpso.output.SimulationResult;
 
 public class TransitionsResults {
-    private static final String FITNESS_FUNCTION = "Rastrigin";
-    private static final String PACKAGE = "pl.edu.agh.miss.fitness";
+    private static final String FITNESS_FUNCTION = "Styblinski";
+    private static final String PACKAGE = "pl.edu.agh.mpso.fitness";
     private final static int DIMENSIONS = 100;
     private final static int ITERATIONS = 5000;
     private final static int TOTAL_PARTICLES = 25;
@@ -51,7 +51,7 @@ public class TransitionsResults {
         
         System.out.println("Counting average results");
         
-        File csvFile = new File("results/thesis/transitions/results_" + fitnessFunction + ".csv");
+        File csvFile = new File("results/thesis2/transitions/results_" + fitnessFunction + ".csv");
 		PrintWriter writer = new PrintWriter(csvFile);
 		String firstLine = "," + groupedResults.keySet().toString().replace("[", "").replace("]", "").replace("\\s", "");
 		writer.append(firstLine + "\n");
@@ -64,7 +64,7 @@ public class TransitionsResults {
         			lines.put(shiftFunction, new StringBuffer(shiftFunction));
         		}
         		double avg = average(groupedResults.get(orderFunction).get(shiftFunction));
-        		lines.get(shiftFunction).append("," + avg);
+        		lines.get(shiftFunction).append("," + round(avg));
         	}
         }
 
@@ -115,7 +115,7 @@ public class TransitionsResults {
 //		return Math.sqrt(variance);
 //	}
 //	
-//	private static double round(double a){
-//		return  (double) Math.round(a * 100) / 100;
-//	}
+	private static double round(double a){
+		return  (double) Math.round(a * 100) / 100;
+	}
 }

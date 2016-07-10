@@ -3,6 +3,7 @@ package pl.edu.agh.mpso.graphs;
 import static pl.edu.agh.mpso.Simulation.NUMBER_OF_PARTICLES;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
@@ -19,8 +20,8 @@ import pl.edu.agh.mpso.output.SimulationResult;
 import pl.edu.agh.mpso.species.SpeciesType;
 
 public class SpeciesShareGraphForArticle {
-	private static final String PACKAGE = "pl.edu.agh.miss.fitness";
-	private static final String fitnessFunction = "Ackley";
+	private static final String PACKAGE = "pl.edu.agh.mpso.fitness";
+	private static final String fitnessFunction = "Styblinski";
 	private final static int dimensions = 100;
 	private final static int iterations = 3000;
 	private final static int totalParticles = 25;
@@ -82,7 +83,7 @@ public class SpeciesShareGraphForArticle {
 			List<List<Double>> valuesList = filteredResults.get(cnt);
 			if(valuesList.size() < minExecutions) minExecutions = valuesList.size();
 			
-			for(int i = 0; i < 100; i++){
+			for(int i = 1; i < 100; i++){
 				//count average
 				double sum = 0.0;
 				
@@ -98,26 +99,47 @@ public class SpeciesShareGraphForArticle {
 			chart.addSeries(label, points);
 		}
 
-		String path = "thesis/share/" + fitnessFunction;
+		String path = "thesis2/share/" + fitnessFunction;
 		String suffix = "" + speciesId + "_" + totalParticles + "_" + dimensions + "_" + iterations + "_" + minExecutions;
 		
-		chart.saveWithDateStamp(path + "/chart_" + suffix);
+		chart.save("results/" + path + "/sp" + speciesId + ".pdf");
 		
 		
 		
 		System.out.println("Preparing csv results");
-		File csvFile = new File("results/" + path + "/results_" + suffix + ".csv");
-		PrintWriter writer = new PrintWriter(csvFile);
-		writer.append("Count,Average Quality,Standard Deviation\n");
+		File avgCsvFile = new File("results/" + path + "/average.csv");
+		File stdCsvFile = new File("results/" + path + "/deviation.csv");
+		PrintWriter avgWriter = new PrintWriter(new FileOutputStream(avgCsvFile, true));
+		PrintWriter stdWriter = new PrintWriter(new FileOutputStream(stdCsvFile, true));
+//		writer.append("Count,Average Quality,Standard Deviation\n");
 		
-		for(int cnt : counts){
-			List<Double> values = filteredQuality.get(cnt);
+		avgWriter.append(SpeciesType.values()[speciesId-1].name() + ",");
+		
+		for(int i = 0; i < counts.length; i++){
+			List<Double> values = filteredQuality.get(counts[i]);
 			double avg = average(values);
 			double stD = standardDeviation(values, avg);
-			writer.append("" + cnt + "," + round(avg) + "," + round(stD) + "\n");
+			avgWriter.append("" + round(avg));
+			stdWriter.append("" + round(stD));
+			
+			if(i == counts.length - 1){
+				avgWriter.append("\n");
+				stdWriter.append("\n");
+			} else {
+				avgWriter.append(",");
+				stdWriter.append(",");
+			}
 		}
 		
-		writer.close();
+//		for(int cnt : counts){
+//			List<Double> values = filteredQuality.get(cnt);
+//			double avg = average(values);
+//			double stD = standardDeviation(values, avg);
+//			avgWriter.append("" + cnt + "," + round(avg) + "," + round(stD) + "\n");
+//		}
+		
+		stdWriter.close();
+		avgWriter.close();
 	}
 	
 	private static double average(List<Double> values){

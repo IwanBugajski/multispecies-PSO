@@ -6,6 +6,7 @@ import java.awt.Paint;
 import java.awt.Shape;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,14 @@ public class ScatterChart extends Chart<List<Point>>{
 	@Override
 	public Chart<List<Point>> addSeries(String name, List<Point> values) {
 		data.put(name, values);
+		return this;
+	}
+	
+	public Chart<List<Point>> addToSeries(String name, Point value){
+		if(!data.containsKey(name)){
+			data.put(name, new ArrayList<Point>());
+		}
+		data.get(name).add(value);
 		return this;
 	}
 
