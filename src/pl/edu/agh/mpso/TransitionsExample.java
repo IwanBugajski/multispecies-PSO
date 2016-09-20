@@ -4,7 +4,6 @@ import net.sourceforge.jswarm_pso.FitnessFunction;
 import net.sourceforge.jswarm_pso.Neighborhood1D;
 import pl.edu.agh.mpso.chart.Point;
 import pl.edu.agh.mpso.chart.ScatterChart;
-import pl.edu.agh.mpso.chart.SpeciesPieChart;
 import pl.edu.agh.mpso.fitness.Rastrigin;
 import pl.edu.agh.mpso.species.SpeciesType;
 import pl.edu.agh.mpso.swarm.MultiSwarm;
@@ -20,9 +19,9 @@ public class TransitionsExample {
 	private final static ShiftFunction SHIFT_FUNCTION = new WorstLocalShift();
 
 	private final static int ITERATIONS = 800;
-	private final static int INTERVAL = 100;
+	private final static int INTERVAL = 50;
 
-	private final static String PATH = "/thesis2/example/";
+	private final static String PATH = "/article/example/";
 	
 	public static void main(String[] args) {
 		MultiSwarm changingSwarm = new MultiSwarm(getSwarmInfos(new int[]{4,3,3,3,3,3,3,3}), FITNESS_FUNCTION);
@@ -41,30 +40,40 @@ public class TransitionsExample {
 		staticSwarm.setInertia(0.95);
 		staticSwarm.init();
 		
-		ScatterChart fitnessChart = (ScatterChart) new ScatterChart().setXAxisTitle("Iterations").setYAxisTitle("Quality");
+		MultiSwarm classicSwarm = new MultiSwarm(getSwarmInfos(new int[]{25,0,0,0,0,0,0,0}), FITNESS_FUNCTION);
+		classicSwarm.setNeighborhood(new Neighborhood1D(5, true));
+		classicSwarm.setMaxPosition(5);
+		classicSwarm.setMinPosition(-5);
+		classicSwarm.setInertia(0.95);
+		classicSwarm.init();
+		
+		ScatterChart fitnessChart = (ScatterChart) new ScatterChart().setXAxisTitle("Iterations").setYAxisTitle("Fitness");
+		ScatterChart shareChart = (ScatterChart) new ScatterChart().setIntegerScale().setXAxisTitle("Iterations").setYAxisTitle("Number of individuals");
 		
 		for(int i = 0; i < ITERATIONS; i++){
 			changingSwarm.evolve();
 			staticSwarm.evolve();
+			classicSwarm.evolve();
 			
 			if(i % (INTERVAL / 10) == 0){
 				fitnessChart.addToSeries("Changing", new Point(i, changingSwarm.getBestFitness()));
 				fitnessChart.addToSeries("Static", new Point(i, staticSwarm.getBestFitness()));
+				fitnessChart.addToSeries("Classic", new Point(i, classicSwarm.getBestFitness()));
 			}
 			
-			if(i % INTERVAL == 0){
-				
+			if(i % (INTERVAL / 2) == 0){
 				int[] species = changingSwarm.getSpecies();
-				SpeciesPieChart speciesPieChart = new SpeciesPieChart();
 				for(int s = 0; s < species.length; s++){
-					speciesPieChart.addSeries(SpeciesType.values()[s].name(), species[s]);
+					shareChart.addToSeries(SpeciesType.values()[s].name(), new Point(i, species[s]));
 				}
-				speciesPieChart.setFileFormat("pdf").saveWithDateStamp(PATH + "share_" + i);
 			}
 		}
 		System.out.println(changingSwarm.getBestFitness());
 		System.out.println(staticSwarm.getBestFitness());
+		System.out.println(classicSwarm.getBestFitness());
 		fitnessChart.setFileFormat("pdf").saveWithDateStamp(PATH + "fitness"); 
+		shareChart.setFileFormat("pdf").saveWithDateStamp(PATH + "share");
+		shareChart.connectTheDots().setFileFormat("pdf").saveWithDateStamp(PATH + "share_connected");
 	}
 
 	private static SwarmInformation [] getSwarmInfos(int [] particles){

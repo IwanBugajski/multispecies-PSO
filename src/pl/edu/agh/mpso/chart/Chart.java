@@ -16,7 +16,9 @@ public abstract class Chart<T> {
 	protected List<Title> subtitles;
 	protected boolean standardDeviation = false;
 	protected boolean logScale;
+	protected boolean integerScale = false;
 	protected String fileFormat = "jpg";
+	protected boolean connectDots;
 	
 	public Chart<T> addSubTitle(String subtitle){
 		if(subtitles == null) subtitles = new ArrayList<Title>();
@@ -89,4 +91,14 @@ public abstract class Chart<T> {
 	public abstract Chart<T> addSeries(String name, T values);
 	
 	protected abstract void save(File file) throws IOException;
+
+	public Chart<T> setIntegerScale() {
+		this.integerScale = true;
+		return this;
+	}
+	
+	public Chart<T> connectTheDots(){
+		connectDots = true;
+		return this;
+	}
 }

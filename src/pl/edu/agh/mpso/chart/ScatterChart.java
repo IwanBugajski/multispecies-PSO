@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
 import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,8 +15,10 @@ import java.util.Map;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.LogAxis;
+import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.Title;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -84,10 +87,24 @@ public class ScatterChart extends Chart<List<Point>>{
 			chart.addSubtitle(subtitle);
 		}
 		
+		if(connectDots){
+			XYPlot plot = (XYPlot) chart.getPlot();
+	        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+	        renderer.setSeriesLinesVisible(0, true);
+	        Shape shape  = new Ellipse2D.Double(0,0,3,3);
+	        renderer.setBaseShape(shape);
+	        plot.setRenderer(renderer);
+		}
+		
 		if(logScale){
 			XYPlot plot = (XYPlot) chart.getPlot();
 			LogAxis logAxis = new LogAxis(yTitle);
 			plot.setRangeAxis(logAxis);
+		}
+		
+		if(integerScale){
+			XYPlot plot = (XYPlot) chart.getPlot();
+			plot.getRangeAxis().setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 		}
 		
 		if(standardDeviation){
