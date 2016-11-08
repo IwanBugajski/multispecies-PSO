@@ -47,7 +47,7 @@ public class TransitionsExample {
 		classicSwarm.setInertia(0.95);
 		classicSwarm.init();
 		
-		ScatterChart fitnessChart = (ScatterChart) new ScatterChart().setXAxisTitle("Iterations").setYAxisTitle("Fitness");
+		ScatterChart fitnessChart = (ScatterChart) new ScatterChart().connectTheDots().setXAxisTitle("Iterations").setYAxisTitle("Fitness");
 		ScatterChart shareChart = (ScatterChart) new ScatterChart().setIntegerScale().setXAxisTitle("Iterations").setYAxisTitle("Number of individuals");
 		
 		for(int i = 0; i < ITERATIONS; i++){
@@ -55,7 +55,7 @@ public class TransitionsExample {
 			staticSwarm.evolve();
 			classicSwarm.evolve();
 			
-			if(i % (INTERVAL / 10) == 0){
+			if(i % (INTERVAL / 2) == 0){
 				fitnessChart.addToSeries("Changing", new Point(i, changingSwarm.getBestFitness()));
 				fitnessChart.addToSeries("Static", new Point(i, staticSwarm.getBestFitness()));
 				fitnessChart.addToSeries("Classic", new Point(i, classicSwarm.getBestFitness()));
